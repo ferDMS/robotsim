@@ -45,4 +45,5 @@ You can also use the sensors available and get their values
 
 <br>
 ---
+
 ![Simulator screen shot](images\simulator_view.PNG)
