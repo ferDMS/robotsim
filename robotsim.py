@@ -1,7 +1,6 @@
 import pygame
 import json
 import math
-import time
 
 pixel_constant = 50
 display_width = 0
@@ -33,7 +32,7 @@ gameDisplay = None
 robot = None
 
 pygame.init()
-robotImg = pygame.image.load('robot1.png')
+robotImg = pygame.image.load('robot.png')
 run_button = pygame.image.load('run.png')
 pygame.display.set_caption('Robot simulator')
 clock = pygame.time.Clock()
@@ -90,7 +89,7 @@ class Robot:
                 return
         self.set_position(x2,y2,angle)
 
-    def move_backwards(self):
+    def move_backward(self):
         angle = self.w
         x1 = self.x 
         y1 = self.y 
