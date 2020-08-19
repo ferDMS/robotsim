@@ -44,6 +44,5 @@ You can also use the sensors available and get their values
 | robot.get_color()          | string     | Returns the color of the tile in which the robot is currently in.             |
 
 <br>
----
 
-![Simulator screen shot](images/simulator_view.png)
+![Simulator screen shot](images/simulator_view.PNG)
