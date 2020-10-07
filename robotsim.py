@@ -1,6 +1,7 @@
 import pygame
 import json
 import math
+from map import Map
 
 pixel_constant = 50
 display_width = 0
@@ -125,7 +126,7 @@ class Robot:
             y2 = y1 - int(math.sin(math.radians(angle)) * i)
             x2 = 0 if x2 < 0 else display_width if x2 > display_width else x2
             y2 = 0 if y2 < 0 else display_height if y2 > display_height else y2
-            is_wall = gameDisplay.get_at((x2,y2)) == colors['black']
+            is_wall = gameDisplay.get_at((x2,y2)) == colors['black'] or gameDisplay.get_at((x2,y2)) == colors['magenta']
             pygame.draw.line(gameDisplay, red, (x1, y1), (x2, y2))
             if is_wall:
                 pygame.display.update()
@@ -179,7 +180,16 @@ def generate_map():
         y1 = wall['y1'] * pixel_constant
         y2 = wall['y2'] * pixel_constant
         if x1 == x2 or y1 == y2: # This ignores diagonal walls
-            pygame.draw.line(gameDisplay, colors['black'], (x1, y1), (x2, y2))
+            pygame.draw.line(gameDisplay, colors['black'], (x1, y1), (x2, y2), 5)
+
+    # Inner doors
+    for door in map_info['doors']:
+        x1 = door['x1'] * pixel_constant
+        x2 = door['x2'] * pixel_constant
+        y1 = door['y1'] * pixel_constant
+        y2 = door['y2'] * pixel_constant
+        if x1 == x2 or y1 == y2: # This ignores diagonal walls
+            pygame.draw.line(gameDisplay, colors['magenta'], (x1, y1), (x2, y2), 5)
     
 
 def setup_map():
