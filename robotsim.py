@@ -1,6 +1,7 @@
 import pygame
 import json
 import math
+from map import Map
 
 pixel_constant = 50
 display_width = 0
@@ -30,6 +31,7 @@ colors = {
 
 gameDisplay = None
 robot = None
+map = None
 
 pygame.init()
 robotImg = pygame.image.load('robot.png')
@@ -187,6 +189,7 @@ def setup_map():
     global display_height 
     global pixel_constant
     global gameDisplay
+    global map
 
     pixel_constant = map_info['squareSize'] if map_info['squareSize'] else pixel_constant
     display_width = map_info['size']['w'] * pixel_constant
@@ -194,7 +197,21 @@ def setup_map():
 
     gameDisplay = pygame.display.set_mode((display_width,display_height))
 
-    generate_map()
+    #Map object initialization
+    map = Map(map_info['size']['w'],map_info['size']['h'])
+    for tile in map_info['tiles']:
+        map.tiles[tile['row']][tile['col']].color = tile['color']
+        map.tiles[tile['row']][tile['col']].North.status = tile['directions'][0]
+        map.tiles[tile['row']][tile['col']].North.data = tile['data'][0]
+        map.tiles[tile['row']][tile['col']].South.status = tile['directions'][0]
+        map.tiles[tile['row']][tile['col']].South.data = tile['data'][0]
+        map.tiles[tile['row']][tile['col']].East.status = tile['directions'][0]
+        map.tiles[tile['row']][tile['col']].East.data = tile['data'][0]
+        map.tiles[tile['row']][tile['col']].West.status = tile['directions'][0]
+        map.tiles[tile['row']][tile['col']].West.data = tile['data'][0]
+
+    #TODO: Issue #5
+    #generate_map()
 
 def setup_robot():
     global robot
@@ -203,9 +220,9 @@ def setup_robot():
     robot_size = int(pixel_constant * 0.5)
     robotImg = pygame.transform.scale(robotImg, (robot_size, robot_size))
     
-    start_x = map_info['start']['x'] * pixel_constant
-    start_y = map_info['start']['y'] * pixel_constant
-    angle = map_info['start']['w']
+    start_x = map_info['robot_start']['col'] * pixel_constant
+    start_y = map_info['robot_start']['row'] * pixel_constant
+    angle = map_info['robot_start']['w']
 
     robot = Robot(start_x,start_y,angle,robot_size)
 
