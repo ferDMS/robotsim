@@ -43,6 +43,10 @@ crashed = False
 reset = False
 start = True
 
+with open('map.json') as json_file:
+    map_info = json.load(json_file)
+
+
 class Robot:
     def __init__(self,x,y,w,size):
         self.x = x
@@ -173,7 +177,7 @@ def generate_map():
         y1 = [0, 1, 0, 0]
         x2 = [1, 1, 1, 0]
         y2 = [0, 1, 1, 1]
-        wall_colors = ['white', 'cyan', 'magenta']
+        wall_colors = [None, 'cyan', 'magenta']
         wall_order = 0
         #Wall shifting towards the center
         shift_x = [0, 0, -1, 1]
@@ -184,7 +188,9 @@ def generate_map():
                 x2_pixel = (tile['col'] + x2[wall_order]) * pixel_constant + shift_x[wall_order] * pixel_constant * 0.02
                 y1_pixel = (tile['row'] + y1[wall_order]) * pixel_constant + shift_y[wall_order] * pixel_constant * 0.02
                 y2_pixel = (tile['row'] + y2[wall_order]) * pixel_constant + shift_y[wall_order] * pixel_constant * 0.02
-                pygame.draw.line(gameDisplay, colors[wall_colors[wall]], (x1_pixel, y1_pixel), (x2_pixel, y2_pixel),5)
+                color = wall_colors[wall]
+                if(tile['data'][wall_order] == '0'): color = 'black'
+                pygame.draw.line(gameDisplay, colors[color], (x1_pixel, y1_pixel), (x2_pixel, y2_pixel),5)
             wall_order = wall_order + 1
      
 
@@ -231,15 +237,13 @@ def setup_robot():
     robot = Robot(start_x,start_y,angle,robot_size)
 
 
-with open('map.json') as json_file:
-    map_info = json.load(json_file)
-
 def main():
     setup_map()
     setup_robot()
     with open("main_program.py") as f:
         code = compile(f.read(), "main_program.py", 'exec')
         exec(code)
+
 
 if __name__ == "__main__":
 
