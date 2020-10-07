@@ -1,6 +1,7 @@
 import pygame
 import json
 import math
+from map import Map
 
 pixel_constant = 50
 display_width = 0
@@ -30,6 +31,7 @@ colors = {
 
 gameDisplay = None
 robot = None
+map = None
 
 pygame.init()
 robotImg = pygame.image.load('robot.png')
@@ -40,6 +42,10 @@ clock = pygame.time.Clock()
 crashed = False
 reset = False
 start = True
+
+with open('map.json') as json_file:
+    map_info = json.load(json_file)
+
 
 class Robot:
     def __init__(self,x,y,w,size):
@@ -159,34 +165,41 @@ class Robot:
 def generate_map():
     gameDisplay.fill(white)
 
-    # Color tiles
-    for color in map_info['colors']:
-        x = color['x'] * pixel_constant
-        y = color['y'] * pixel_constant
-        c = colors[color['color']]
+    for tile in map_info['tiles']:
+        #Tile color
+        x = tile['col'] * pixel_constant
+        y = tile['row'] * pixel_constant
+        c = colors[tile['color']]
         pygame.draw.rect(gameDisplay,c,(x,y,pixel_constant,pixel_constant))
 
-    # Exterior walls
-    pygame.draw.line(gameDisplay, colors['black'], (0, 0), (display_width-1, 0))
-    pygame.draw.line(gameDisplay, colors['black'], (0, 0), (0, display_height-1))
-    pygame.draw.line(gameDisplay, colors['black'], (display_width-1, 0), (display_width-1, display_height-1))
-    pygame.draw.line(gameDisplay, colors['black'], (0, display_height-1), (display_width-1, display_height-1))
+        #Tile walls in North, South, East and West order
+        x1 = [0, 0, 1, 0]
+        y1 = [0, 1, 0, 0]
+        x2 = [1, 1, 1, 0]
+        y2 = [0, 1, 1, 1]
+        wall_colors = [None, 'cyan', 'magenta']
+        wall_order = 0
+        #Wall shifting towards the center
+        shift_x = [0, 0, -1, 1]
+        shift_y = [1, -1, 0, 0]
+        for wall in tile['directions']:
+            if wall != 0:
+                x1_pixel = (tile['col'] + x1[wall_order]) * pixel_constant + shift_x[wall_order] * pixel_constant * 0.02
+                x2_pixel = (tile['col'] + x2[wall_order]) * pixel_constant + shift_x[wall_order] * pixel_constant * 0.02
+                y1_pixel = (tile['row'] + y1[wall_order]) * pixel_constant + shift_y[wall_order] * pixel_constant * 0.02
+                y2_pixel = (tile['row'] + y2[wall_order]) * pixel_constant + shift_y[wall_order] * pixel_constant * 0.02
+                color = wall_colors[wall]
+                if(tile['data'][wall_order] == '0'): color = 'black'
+                pygame.draw.line(gameDisplay, colors[color], (x1_pixel, y1_pixel), (x2_pixel, y2_pixel),5)
+            wall_order = wall_order + 1
+     
 
-    # Inner walls
-    for wall in map_info['walls']:
-        x1 = wall['x1'] * pixel_constant
-        x2 = wall['x2'] * pixel_constant
-        y1 = wall['y1'] * pixel_constant
-        y2 = wall['y2'] * pixel_constant
-        if x1 == x2 or y1 == y2: # This ignores diagonal walls
-            pygame.draw.line(gameDisplay, colors['black'], (x1, y1), (x2, y2))
-
-            
 def setup_map():
     global display_width 
     global display_height 
     global pixel_constant
     global gameDisplay
+    global map
 
     pixel_constant = map_info['squareSize'] if map_info['squareSize'] else pixel_constant
     display_width = map_info['size']['w'] * pixel_constant
@@ -194,7 +207,21 @@ def setup_map():
 
     gameDisplay = pygame.display.set_mode((display_width,display_height))
 
+    #Map initialization
+    map = Map(map_info['size']['w'],map_info['size']['h'])
+    for tile in map_info['tiles']:
+        map.tiles[tile['row']][tile['col']].color = tile['color']
+        map.tiles[tile['row']][tile['col']].North.status = tile['directions'][0]
+        map.tiles[tile['row']][tile['col']].North.data = tile['data'][0]
+        map.tiles[tile['row']][tile['col']].South.status = tile['directions'][1]
+        map.tiles[tile['row']][tile['col']].South.data = tile['data'][1]
+        map.tiles[tile['row']][tile['col']].East.status = tile['directions'][2]
+        map.tiles[tile['row']][tile['col']].East.data = tile['data'][2]
+        map.tiles[tile['row']][tile['col']].West.status = tile['directions'][3]
+        map.tiles[tile['row']][tile['col']].West.data = tile['data'][3]
+
     generate_map()
+
 
 def setup_robot():
     global robot
@@ -203,15 +230,12 @@ def setup_robot():
     robot_size = int(pixel_constant * 0.5)
     robotImg = pygame.transform.scale(robotImg, (robot_size, robot_size))
     
-    start_x = map_info['start']['x'] * pixel_constant
-    start_y = map_info['start']['y'] * pixel_constant
-    angle = map_info['start']['w']
+    start_x = map_info['robot_start']['col'] * pixel_constant
+    start_y = map_info['robot_start']['row'] * pixel_constant
+    angle = map_info['robot_start']['w']
 
     robot = Robot(start_x,start_y,angle,robot_size)
 
-
-with open('map.json') as json_file:
-    map_info = json.load(json_file)
 
 def main():
     setup_map()
@@ -219,6 +243,7 @@ def main():
     with open("main_program.py") as f:
         code = compile(f.read(), "main_program.py", 'exec')
         exec(code)
+
 
 if __name__ == "__main__":
 

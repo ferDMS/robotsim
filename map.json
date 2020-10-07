@@ -3,47 +3,39 @@
     "size" : {
         "w":5,
         "h":5},
-    "start" : {
-        "x" : 2,
-        "y" : 2,
+    "robot_start" : {
+        "row" : 0,
+        "col" : 0,
         "w" : 90
     },
-    "walls" : [
+    "tiles" : [
         {
-            "x1" : 1,
-            "y1" : 1,
-            "x2" : 1,
-            "y2" : 2
+            "row":0,
+            "col":0,
+            "color" : "yellow",
+            "directions" : [1, 0, 1, 2],
+            "data" : ["1", null, "0", "011"]
         },
         {
-            "x1" : 0,
-            "y1" : 0,
-            "x2" : 0,
-            "y2" : 1
+            "row":0,
+            "col":1,
+            "color" : "yellow",
+            "directions" : [1, 0, 1, 2],
+            "data" : ["1", null, "0", "011"]
         },
         {
-            "x1" : 0,
-            "y1" : 1,
-            "x2" : 1,
-            "y2" : 1
-        }
-                
-    ],
-    "colors" : [
-        {
-            "x" : 0,
-            "y" : 0,
-            "color" : "blue"
+            "row":3,
+            "col":2,
+            "color" : "blue",
+            "directions" : [1, 0, 1, 2],
+            "data" : ["1", null, "0", "011"]
         },
         {
-            "x" : 1,
-            "y" : 1,
-            "color" : "magenta"
-        },
-        {
-            "x" : 2,
-            "y" : 2,
-            "color" : "cyan"
+            "row":4,
+            "col":2,
+            "color" : "green",
+            "directions" : [1, 0, 1, 2],
+            "data" : ["1", null, "0", "011"]
         }
     ]
 }

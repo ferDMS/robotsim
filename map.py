@@ -8,8 +8,7 @@ class DirectionStatus(enum.Enum):
 class Direction:
     def __init__(self):
         self.status = DirectionStatus.Free 
-        self.password = None
-        self.symbol = None
+        self.data = None
         
 
 class Tile:
