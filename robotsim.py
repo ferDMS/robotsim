@@ -187,6 +187,7 @@ def generate_map():
                 pygame.draw.line(gameDisplay, colors[wall_colors[wall]], (x1_pixel, y1_pixel), (x2_pixel, y2_pixel),5)
             wall_order = wall_order + 1
      
+
 def setup_map():
     global display_width 
     global display_height 
@@ -214,6 +215,7 @@ def setup_map():
         map.tiles[tile['row']][tile['col']].West.data = tile['data'][3]
 
     generate_map()
+
 
 def setup_robot():
     global robot
