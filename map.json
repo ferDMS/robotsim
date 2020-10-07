@@ -17,6 +17,13 @@
             "data" : ["1", null, "0", "011"]
         },
         {
+            "row":0,
+            "col":1,
+            "color" : "yellow",
+            "directions" : [0, 0, 1, 2],
+            "data" : ["1", null, "0", "011"]
+        },
+        {
             "row":3,
             "col":2,
             "color" : "blue",

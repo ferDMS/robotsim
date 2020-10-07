@@ -161,29 +161,32 @@ class Robot:
 def generate_map():
     gameDisplay.fill(white)
 
-    # Color tiles
-    for color in map_info['colors']:
-        x = color['x'] * pixel_constant
-        y = color['y'] * pixel_constant
-        c = colors[color['color']]
+    for tile in map_info['tiles']:
+        #Tile color
+        x = tile['col'] * pixel_constant
+        y = tile['row'] * pixel_constant
+        c = colors[tile['color']]
         pygame.draw.rect(gameDisplay,c,(x,y,pixel_constant,pixel_constant))
 
-    # Exterior walls
-    pygame.draw.line(gameDisplay, colors['black'], (0, 0), (display_width-1, 0))
-    pygame.draw.line(gameDisplay, colors['black'], (0, 0), (0, display_height-1))
-    pygame.draw.line(gameDisplay, colors['black'], (display_width-1, 0), (display_width-1, display_height-1))
-    pygame.draw.line(gameDisplay, colors['black'], (0, display_height-1), (display_width-1, display_height-1))
-
-    # Inner walls
-    for wall in map_info['walls']:
-        x1 = wall['x1'] * pixel_constant
-        x2 = wall['x2'] * pixel_constant
-        y1 = wall['y1'] * pixel_constant
-        y2 = wall['y2'] * pixel_constant
-        if x1 == x2 or y1 == y2: # This ignores diagonal walls
-            pygame.draw.line(gameDisplay, colors['black'], (x1, y1), (x2, y2))
-
-            
+        #Tile walls in North, South, East and West order
+        x1 = [0, 0, 1, 0]
+        y1 = [0, 1, 0, 0]
+        x2 = [1, 1, 1, 0]
+        y2 = [0, 1, 1, 1]
+        wall_colors = ['white', 'cyan', 'magenta']
+        wall_order = 0
+        #Wall shifting towards the center
+        shift_x = [0, 0, -1, 1]
+        shift_y = [1, -1, 0, 0]
+        for wall in tile['directions']:
+            if wall != 0:
+                x1_pixel = (tile['col'] + x1[wall_order]) * pixel_constant + shift_x[wall_order] * pixel_constant * 0.02
+                x2_pixel = (tile['col'] + x2[wall_order]) * pixel_constant + shift_x[wall_order] * pixel_constant * 0.02
+                y1_pixel = (tile['row'] + y1[wall_order]) * pixel_constant + shift_y[wall_order] * pixel_constant * 0.02
+                y2_pixel = (tile['row'] + y2[wall_order]) * pixel_constant + shift_y[wall_order] * pixel_constant * 0.02
+                pygame.draw.line(gameDisplay, colors[wall_colors[wall]], (x1_pixel, y1_pixel), (x2_pixel, y2_pixel),5)
+            wall_order = wall_order + 1
+     
 def setup_map():
     global display_width 
     global display_height 
@@ -197,21 +200,20 @@ def setup_map():
 
     gameDisplay = pygame.display.set_mode((display_width,display_height))
 
-    #Map object initialization
+    #Map initialization
     map = Map(map_info['size']['w'],map_info['size']['h'])
     for tile in map_info['tiles']:
         map.tiles[tile['row']][tile['col']].color = tile['color']
         map.tiles[tile['row']][tile['col']].North.status = tile['directions'][0]
         map.tiles[tile['row']][tile['col']].North.data = tile['data'][0]
-        map.tiles[tile['row']][tile['col']].South.status = tile['directions'][0]
-        map.tiles[tile['row']][tile['col']].South.data = tile['data'][0]
-        map.tiles[tile['row']][tile['col']].East.status = tile['directions'][0]
-        map.tiles[tile['row']][tile['col']].East.data = tile['data'][0]
-        map.tiles[tile['row']][tile['col']].West.status = tile['directions'][0]
-        map.tiles[tile['row']][tile['col']].West.data = tile['data'][0]
+        map.tiles[tile['row']][tile['col']].South.status = tile['directions'][1]
+        map.tiles[tile['row']][tile['col']].South.data = tile['data'][1]
+        map.tiles[tile['row']][tile['col']].East.status = tile['directions'][2]
+        map.tiles[tile['row']][tile['col']].East.data = tile['data'][2]
+        map.tiles[tile['row']][tile['col']].West.status = tile['directions'][3]
+        map.tiles[tile['row']][tile['col']].West.data = tile['data'][3]
 
-    #TODO: Issue #5
-    #generate_map()
+    generate_map()
 
 def setup_robot():
     global robot
