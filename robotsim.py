@@ -181,6 +181,7 @@ def generate_map():
         if x1 == x2 or y1 == y2: # This ignores diagonal walls
             pygame.draw.line(gameDisplay, colors['black'], (x1, y1), (x2, y2))
 
+            
 def setup_map():
     global display_width 
     global display_height 
