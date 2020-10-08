@@ -1,28 +1,25 @@
 '''
 Movement:
     robot.move_forward()
-    robot.move_backward()
     robot.rotate_right()
     robot.rotate_left()
 
 Sensors:
-    robot.ultrasonic_forward() -> int
-    robot.ultrasonic_left() -> int
-    robot.ultrasonic_right() ->int
-    robot.ultrasonic_back() -> int
-    robot.get_color() -> string
+    robot.ultrasonicFront() -> None
+    robot.getColor() -> string
+    robot.detectSimbolLeft() -> int
+    robot.detectSimbolRight() -> int
+    robot.detectDoorFront() -> bool
+    robot.insertCode() -> int
 '''
 
 def main():
-    def rotate_90_left():
-        for i in range(90):
-            robot.rotate_left()
-
-    for i in range(4):
-        while(robot.ultrasonic_forward() > 25):
-            robot.move_forward()
-            print( robot.ultrasonic_left(),robot.ultrasonic_right())
-        rotate_90_left()
+    for _ in range(4):
+        robot.move_forward()
+    print(robot.getColor())
+    print(robot.detectSimbolRight())
+    robot.rotate_left()
+    print(robot.detectDoorFront())
 
 if __name__ == "__main__":
     main()
