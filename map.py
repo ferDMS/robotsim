@@ -24,8 +24,8 @@ class Map:
         
         self.width = width 
         self.height = height 
-
-        self.tiles = [[False] * self.width] * self.height
+        
+        self.tiles = [[False for i in range(self.width)] for j in range(self.height)]
         
         for x in range(self.width):
             for y in range(self.height):
