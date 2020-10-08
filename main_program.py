@@ -5,7 +5,7 @@ Movement:
     robot.rotate_left()
 
 Sensors:
-    robot.ultrasonicFront() -> None
+    robot.ultrasonicFront() -> int
     robot.getColor() -> string
     robot.detectSimbolLeft() -> int
     robot.detectSimbolRight() -> int

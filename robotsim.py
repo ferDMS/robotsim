@@ -102,19 +102,13 @@ class Robot:
         pass 
     
     def rotate_right(self):
-        if 1 <= self.dir <= 3:
-            self.dir -= 1
-        else:
-            self.dir = 3
+        self.dir = (self.dir - 1 + 4) % 4
         for _ in range(30):
             generate_map()
             self.set_position(self.x,self.y,self.w - 3)
 
     def rotate_left(self):
-        if 0 <= self.dir <= 2:
-            self.dir += 1
-        else:
-            self.dir = 0
+        self.dir = (self.dir + 1) % 4
         for _ in range(30):
             generate_map()
             self.set_position(self.x,self.y,self.w + 3)
@@ -163,7 +157,7 @@ class Robot:
                 distance = map.width - self.col - 1 
         pygame.display.update()
         clock.tick(120)
-        return distance
+        return distance * 30
 
     def detectSimbolLeft(self):
         row = self.row
@@ -219,18 +213,22 @@ class Robot:
             if map.tiles[row][col].North.data == passw:
                 map.tiles[row][col].North.status = 0
                 generate_map()
+                return True
         if self.dir == 1 and map.tiles[row][col].West.status == 2:
             if map.tiles[row][col].West.data == passw:
                 map.tiles[row][col].West.status = 0
                 generate_map()
+                return True
         if self.dir == 2 and map.tiles[row][col].South.status == 2:
             if map.tiles[row][col].South.data == passw:
                 map.tiles[row][col].South.status = 0
                 generate_map()
+                return True
         if self.dir == 3 and map.tiles[row][col].East.status == 2:
             if map.tiles[row][col].East.data == passw:
                 map.tiles[row][col].East.status = 0
                 generate_map()
+                return True
         return False
         
 
