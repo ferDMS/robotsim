@@ -241,6 +241,7 @@ class Robot:
 
 
 def generate_map():
+    #TODO implement using map.tiles
     gameDisplay.fill(white)
 
     for tile in map_info['tiles']:
