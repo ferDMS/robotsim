@@ -34,8 +34,8 @@
             "row":4,
             "col":2,
             "color" : "green",
-            "directions" : [1, 0, 1, 2],
-            "data" : ["1", null, "0", "011"]
+            "directions" : [1, 0, 1, 1],
+            "data" : ["1", null, "0", "1"]
         }
     ]
 }

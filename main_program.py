@@ -10,16 +10,25 @@ Sensors:
     robot.detectSimbolLeft() -> int
     robot.detectSimbolRight() -> int
     robot.detectDoorFront() -> bool
-    robot.insertCode() -> int
+    robot.insertCode(password) -> int
 '''
 
 def main():
-    for _ in range(4):
+    robot.debugTile()
+    print(robot.ultrasonicFront())
+    robot.rotate_right()
+    for _ in range(2):
         robot.move_forward()
-    print(robot.getColor())
-    print(robot.detectSimbolRight())
-    robot.rotate_left()
-    print(robot.detectDoorFront())
+        robot.debugTile()
+    print(robot.ultrasonicFront())
+    print(robot.insertCode("011"))
+    print(robot.ultrasonicFront())
+    robot.move_forward()
+    robot.debugTile()
+    # print(robot.getColor())
+    # print(robot.detectSimbolRight())
+    # robot.rotate_left()
+    # print(robot.detectDoorFront())
 
 if __name__ == "__main__":
     main()

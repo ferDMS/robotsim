@@ -1,6 +1,6 @@
-import enum
+from enum import IntEnum
 
-class DirectionStatus(enum.Enum):
+class DirectionStatus(IntEnum):
     Free = 0
     Wall = 1
     Door = 2
