@@ -67,11 +67,11 @@ Para correr el programa, símplemente se debe de correr el comando:
 
 El mapa cuenta con las siguientes características:
 
-- **Pared**
-- **Pared con símbolo 0**
-- **Pared con símbolo 1**
-- **Puerta**
-- **baldosas de color**  **verde**  **y** **amarillo**
+- **Pared** **Negro**
+- **Pared con símbolo 0** **Rojo**
+- **Pared con símbolo 1** **Azul**
+- **Puerta** **Magenta**
+- **Baldosas** **Verde**  **y** **Amarillo**
 
 
 ### Funciones del robot
