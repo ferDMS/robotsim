@@ -1,55 +1,132 @@
 {
-    "squareSize" : 100,
+    "squareSize" : 70,
     "size" : {
-        "w":5,
-        "h":5},
+        "w":6,
+        "h":8},
     "robot_start" : {
-        "row" : 3,
-        "col" : 1,
+        "row" : 7,
+        "col" : 0,
         "w" : 90
     },
     "tiles" : [
         {
-            "row":0,
+            "row":6,
             "col":0,
-            "color" : "yellow",
-            "directions" : [1, 0, 1, 2],
-            "data" : ["1", null, "0", "011"]
+            "color" : "white",
+            "directions" : [0, 0, 1, 0],
+            "data" : [null, null, "1", null]
         },
         {
-            "row":0,
-            "col":1,
-            "color" : "yellow",
-            "directions" : [1, 0, 1, 2],
-            "data" : ["1", null, "0", "011"]
-        },
-        {
-            "row":3,
-            "col":2,
-            "color" : "blue",
-            "directions" : [1, 0, 1, 2],
-            "data" : ["1", null, "0", "011"]
+            "row":5,
+            "col":0,
+            "color" : "white",
+            "directions" : [0, 0, 1, 1],
+            "data" : [null, null, "1", "0"]
         },
         {
             "row":4,
-            "col":2,
-            "color" : "green",
-            "directions" : [1, 0, 1, 1],
-            "data" : ["1", null, "0", "1"]
+            "col":0,
+            "color" : "yellow",
+            "directions" : [0, 0, 0, 0],
+            "data" : [null, null, null, null]
         },
         {
-            "row":3,
+            "row":4,
             "col":1,
             "color" : "white",
-            "directions" : [2, 2, 2, 2],
-            "data" : ["101", "101", "101", "101"]
+            "directions" : [1, 0, 2, 0],
+            "data" : ["0", null, "011", null]
+        },
+        {
+            "row":4,
+            "col":3,
+            "color" : "green",
+            "directions" : [0, 0, 0, 0],
+            "data" : [null, null, null, null]
         },
         {
             "row":3,
+            "col":3,
+            "color" : "white",
+            "directions" : [2, 0, 1, 0],
+            "data" : ["110", null, "0", null]
+        },
+        {
+            "row":2,
+            "col":3,
+            "color" : "green",
+            "directions" : [0, 0, 0, 0],
+            "data" : [null, null, null, null]
+        },
+        {
+            "row":2,
+            "col":5,
+            "color" : "yellow",
+            "directions" : [0, 0, 0, 0],
+            "data" : [null, null, null, null]
+        },
+        {
+            "row":1,
+            "col":5,
+            "color" : "yellow",
+            "directions" : [0, 0, 0, 0],
+            "data" : [null, null, null, null]
+        },
+        {
+            "row":1,
+            "col":4,
+            "color" : "white",
+            "directions" : [1, 0, 0, 0],
+            "data" : ["1", null, null, null]
+        },
+        {
+            "row":1,
+            "col":2,
+            "color" : "yellow",
+            "directions" : [1, 0, 0, 0],
+            "data" : ["1", null, null, null]
+        },
+        {
+            "row":5,
+            "col":2,
+            "color" : "white",
+            "directions" : [0, 0, 1, 1],
+            "data" : [null, null, "1", "0"]
+        },
+        {
+            "row":6,
+            "col":2,
+            "color" : "white",
+            "directions" : [0, 0, 1, 0],
+            "data" : [null, null, "0", null]
+        },
+        {
+            "row":7,
+            "col":2,
+            "color" : "green",
+            "directions" : [0, 0, 0, 0],
+            "data" : [null, null, null, null]
+        },
+        {
+            "row":7,
+            "col":4,
+            "color" : "white",
+            "directions" : [1, 0, 0, 2],
+            "data" : ["0", null, null, "110"]
+        },
+        {
+            "row":3,
+            "col":4,
+            "color" : "white",
+            "directions" : [0, 2, 0, 1],
+            "data" : [null, "001", null, "0"]
+        },
+        {
+            "row":1,
             "col":0,
             "color" : "white",
-            "directions" : [2, 2, 1, 2],
-            "data" : ["101", "101", "1", "101"]
+            "directions" : [0, 0, 1, 0],
+            "data" : [null, null, "1", null]
         }
     ]
 }
