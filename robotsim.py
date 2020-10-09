@@ -342,6 +342,8 @@ def setup_robot():
 
     robot_size = int(pixel_constant * 0.5)
     robotImg = pygame.transform.scale(robotImg, (robot_size, robot_size))
+    gameIcon = pygame.image.load('roborregos_logo.PNG')
+    pygame.display.set_icon(gameIcon)
     
     col = map_info['robot_start']['col']
     row = map_info['robot_start']['row']
