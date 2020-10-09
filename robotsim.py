@@ -149,7 +149,7 @@ class Robot:
         if self.dir == 3:
             # col++ until 0
             for pos in range(self.col, map.width):
-                if map.tiles[self.row][pos].East.status in [1, 2]:
+                if map.tiles[self.row][pos].East.status > 0:
                     distance = start
                     break
                 start += 1
@@ -212,21 +212,29 @@ class Robot:
         if self.dir == 0 and map.tiles[row][col].North.status == 2:
             if map.tiles[row][col].North.data == passw:
                 map.tiles[row][col].North.status = 0
+                if(row != 0 and map.tiles[row - 1][col].South.data == None):
+                    map.tiles[row - 1][col].South.status = 0
                 generate_map()
                 return True
         if self.dir == 1 and map.tiles[row][col].West.status == 2:
             if map.tiles[row][col].West.data == passw:
                 map.tiles[row][col].West.status = 0
+                if(col != 0 and map.tiles[row][col - 1].East.data == None):
+                    map.tiles[row][col - 1].East.status = 0
                 generate_map()
                 return True
         if self.dir == 2 and map.tiles[row][col].South.status == 2:
             if map.tiles[row][col].South.data == passw:
                 map.tiles[row][col].South.status = 0
+                if(row != map.height and map.tiles[row + 1][col].North.data == None):
+                    map.tiles[row + 1][col].North.status = 0
                 generate_map()
                 return True
         if self.dir == 3 and map.tiles[row][col].East.status == 2:
             if map.tiles[row][col].East.data == passw:
                 map.tiles[row][col].East.status = 0
+                if(row != map.width and map.tiles[row][col + 1].West.data == None):
+                    map.tiles[row][col + 1].West.status = 0
                 generate_map()
                 return True
         return False
@@ -240,38 +248,55 @@ class Robot:
         return 'white'
 
 
+    def debugTile(self):
+        print("(~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)")
+        print("Color: ", map.tiles[self.row][self.col].color)
+        print("North: ", map.tiles[self.row][self.col].North.status, map.tiles[self.row][self.col].North.data)
+        print("South: ", map.tiles[self.row][self.col].South.status, map.tiles[self.row][self.col].South.data)
+        print("East: ", map.tiles[self.row][self.col].East.status, map.tiles[self.row][self.col].East.data)
+        print("West: ", map.tiles[self.row][self.col].West.status, map.tiles[self.row][self.col].West.data)
+        print("(~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)")
+        
+
+
 def generate_map():
-    #TODO implement using map.tiles
     gameDisplay.fill(white)
 
-    for tile in map_info['tiles']:
-        #Tile color
-        x = tile['col'] * pixel_constant
-        y = tile['row'] * pixel_constant
-        c = colors[tile['color']]
-        pygame.draw.rect(gameDisplay,c,(x,y,pixel_constant,pixel_constant))
+    for row in range(map.height):
+        for col in range(map.width):
+            #Tile color
+            if map.tiles[row][col].color:
+                x = col * pixel_constant
+                y = row * pixel_constant
+                c = colors[map.tiles[row][col].color]
+                pygame.draw.rect(gameDisplay,c,(x,y,pixel_constant,pixel_constant))
 
-        #Tile walls in North, South, East and West order
-        x1 = [0, 0, 1, 0]
-        y1 = [0, 1, 0, 0]
-        x2 = [1, 1, 1, 0]
-        y2 = [0, 1, 1, 1]
-        wall_colors = [None, 'cyan', 'magenta']
-        wall_order = 0
-        #Wall shifting towards the center
-        shift_x = [0, 0, -1, 1]
-        shift_y = [1, -1, 0, 0]
-        for wall in tile['directions']:
-            if wall != 0:
-                x1_pixel = (tile['col'] + x1[wall_order]) * pixel_constant + shift_x[wall_order] * pixel_constant * 0.02
-                x2_pixel = (tile['col'] + x2[wall_order]) * pixel_constant + shift_x[wall_order] * pixel_constant * 0.02
-                y1_pixel = (tile['row'] + y1[wall_order]) * pixel_constant + shift_y[wall_order] * pixel_constant * 0.02
-                y2_pixel = (tile['row'] + y2[wall_order]) * pixel_constant + shift_y[wall_order] * pixel_constant * 0.02
-                color = wall_colors[wall]
-                if(tile['data'][wall_order] == '0'): color = 'black'
-                pygame.draw.line(gameDisplay, colors[color], (x1_pixel, y1_pixel), (x2_pixel, y2_pixel),5)
-            wall_order = wall_order + 1
-     
+            #Tile walls in North, South, East and West order
+            x1 = [0, 0, 1, 0]
+            y1 = [0, 1, 0, 0]
+            x2 = [1, 1, 1, 0]
+            y2 = [0, 1, 1, 1]
+            wall_colors = [None, ['red','blue','black'], 'magenta']
+            dir = ["North","South","East","West"]
+            #Wall shifting towards the center
+            shift_x = [0, 0, -1, 1]
+            shift_y = [1, -1, 0, 0]
+            for wall_order in range(4):
+                direction_status = getattr(getattr(map.tiles[row][col], dir[wall_order]),"status")
+                if direction_status  != 0 :
+                    x1_pixel = (col + x1[wall_order]) * pixel_constant + shift_x[wall_order] * pixel_constant * 0.02
+                    x2_pixel = (col + x2[wall_order]) * pixel_constant + shift_x[wall_order] * pixel_constant * 0.02
+                    y1_pixel = (row + y1[wall_order]) * pixel_constant + shift_y[wall_order] * pixel_constant * 0.02
+                    y2_pixel = (row + y2[wall_order]) * pixel_constant + shift_y[wall_order] * pixel_constant * 0.02
+                    color = wall_colors[direction_status]
+                    if isinstance(color, list):
+                        direction_data = getattr(getattr(map.tiles[row][col], dir[wall_order]),"data")
+                        if direction_data is None:
+                            color = color[-1]
+                        else:
+                            color = color[int(direction_data)]
+                    pygame.draw.line(gameDisplay, colors[color], (x1_pixel, y1_pixel), (x2_pixel, y2_pixel),5)
+
 
 def setup_map():
     global display_width 
@@ -279,6 +304,13 @@ def setup_map():
     global pixel_constant
     global gameDisplay
     global map
+
+    def is_valid_coordinate(row, col):
+        if row >= map.width or row < 0:
+            return False
+        if col >= map.height or col < 0:
+            return False
+        return True
 
     pixel_constant = map_info['squareSize'] if map_info['squareSize'] else pixel_constant
     display_width = map_info['size']['w'] * pixel_constant
@@ -288,17 +320,19 @@ def setup_map():
 
     #Map initialization
     map = Map(map_info['size']['w'],map_info['size']['h'])
+    dir = ["North","South","East","West"]
+    dir_reflection = ["South","North","West","East"]
+    dir_reflection_xy = [(-1,0),(1,0),(0,1),(0,-1)]
     for tile in map_info['tiles']:
         map.tiles[tile['row']][tile['col']].color = tile['color']
-        map.tiles[tile['row']][tile['col']].North.status = tile['directions'][0]
-        map.tiles[tile['row']][tile['col']].North.data = tile['data'][0]
-        map.tiles[tile['row']][tile['col']].South.status = tile['directions'][1]
-        map.tiles[tile['row']][tile['col']].South.data = tile['data'][1]
-        map.tiles[tile['row']][tile['col']].East.status = tile['directions'][2]
-        map.tiles[tile['row']][tile['col']].East.data = tile['data'][2]
-        map.tiles[tile['row']][tile['col']].West.status = tile['directions'][3]
-        map.tiles[tile['row']][tile['col']].West.data = tile['data'][3]
-
+        for dir_index in range(len(dir)):
+            setattr(getattr(map.tiles[tile['row']][tile['col']], dir[dir_index]), "status", tile['directions'][dir_index])
+            setattr(getattr(map.tiles[tile['row']][tile['col']], dir[dir_index]), "data", tile['data'][dir_index])
+            if tile['directions'][dir_index] in [1,2]:
+                new_row = tile['row'] + dir_reflection_xy[dir_index][0]
+                new_col = tile['col'] + dir_reflection_xy[dir_index][1]
+                if is_valid_coordinate(new_row, new_col) and getattr(getattr(map.tiles[new_row][new_col], dir_reflection[dir_index]), "status") == 0:
+                    setattr(getattr(map.tiles[new_row][new_col], dir_reflection[dir_index]), "status", 1)     
     generate_map()
 
 
