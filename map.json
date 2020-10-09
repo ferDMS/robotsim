@@ -4,8 +4,8 @@
         "w":5,
         "h":5},
     "robot_start" : {
-        "row" : 4,
-        "col" : 0,
+        "row" : 3,
+        "col" : 1,
         "w" : 90
     },
     "tiles" : [
@@ -36,6 +36,20 @@
             "color" : "green",
             "directions" : [1, 0, 1, 1],
             "data" : ["1", null, "0", "1"]
+        },
+        {
+            "row":3,
+            "col":1,
+            "color" : "white",
+            "directions" : [2, 2, 2, 2],
+            "data" : ["101", "101", "101", "101"]
+        },
+        {
+            "row":3,
+            "col":0,
+            "color" : "white",
+            "directions" : [2, 2, 1, 2],
+            "data" : ["101", "101", "1", "101"]
         }
     ]
 }

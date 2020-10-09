@@ -148,7 +148,6 @@ class Robot:
 
         if self.dir == 3:
             # col++ until 0
-            print("Checando pared derecha")
             for pos in range(self.col, map.width):
                 if map.tiles[self.row][pos].East.status > 0:
                     distance = start
@@ -158,7 +157,6 @@ class Robot:
                 distance = map.width - self.col - 1 
         pygame.display.update()
         clock.tick(120)
-        print("Distancia: ", distance*30)
         return distance * 30
 
     def detectSimbolLeft(self):
@@ -214,24 +212,31 @@ class Robot:
         if self.dir == 0 and map.tiles[row][col].North.status == 2:
             if map.tiles[row][col].North.data == passw:
                 map.tiles[row][col].North.status = 0
+                if(row != 0 and map.tiles[row - 1][col].South.data == None):
+                    map.tiles[row - 1][col].South.status = 0
                 generate_map()
                 return True
         if self.dir == 1 and map.tiles[row][col].West.status == 2:
             if map.tiles[row][col].West.data == passw:
                 map.tiles[row][col].West.status = 0
+                if(col != 0 and map.tiles[row][col - 1].East.data == None):
+                    map.tiles[row][col - 1].East.status = 0
                 generate_map()
                 return True
         if self.dir == 2 and map.tiles[row][col].South.status == 2:
             if map.tiles[row][col].South.data == passw:
                 map.tiles[row][col].South.status = 0
+                if(row != map.height and map.tiles[row + 1][col].North.data == None):
+                    map.tiles[row + 1][col].North.status = 0
                 generate_map()
                 return True
         if self.dir == 3 and map.tiles[row][col].East.status == 2:
             if map.tiles[row][col].East.data == passw:
                 map.tiles[row][col].East.status = 0
+                if(row != map.width and map.tiles[row][col + 1].West.data == None):
+                    map.tiles[row][col + 1].West.status = 0
                 generate_map()
                 return True
-        print("Incorrect password")
         return False
         
 
@@ -284,9 +289,9 @@ def generate_map():
                     y1_pixel = (row + y1[wall_order]) * pixel_constant + shift_y[wall_order] * pixel_constant * 0.02
                     y2_pixel = (row + y2[wall_order]) * pixel_constant + shift_y[wall_order] * pixel_constant * 0.02
                     color = wall_colors[direction_status]
-                    if isinstance(color, list): 
-                        direction_data = getattr(getattr(map.tiles[row][col], dir[wall_order]),"data") 
-                        if direction_data is None: 
+                    if isinstance(color, list):
+                        direction_data = getattr(getattr(map.tiles[row][col], dir[wall_order]),"data")
+                        if direction_data is None:
                             color = color[-1]
                         else:
                             color = color[int(direction_data)]
@@ -327,9 +332,8 @@ def setup_map():
             if tile['directions'][dir_index] in [1,2]:
                 new_row = tile['row'] + dir_reflection_xy[dir_index][0]
                 new_col = tile['col'] + dir_reflection_xy[dir_index][1]
-                if is_valid_coordinate(new_row, new_col):
-                    setattr(getattr(map.tiles[new_row][new_col], dir_reflection[dir_index]), "status", 1)
-                
+                if is_valid_coordinate(new_row, new_col) and getattr(getattr(map.tiles[new_row][new_col], dir_reflection[dir_index]), "status") == 0:
+                    setattr(getattr(map.tiles[new_row][new_col], dir_reflection[dir_index]), "status", 1)     
     generate_map()
 
 
