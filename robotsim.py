@@ -306,7 +306,6 @@ def setup_map():
     global map
 
     def is_valid_coordinate(row, col):
-        global map
         if row >= map.width or row < 0:
             return False
         if col >= map.height or col < 0:
