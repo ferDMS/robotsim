@@ -1,8 +1,9 @@
 '''
-Movement:
+Control:
     robot.move_forward()
     robot.rotate_right()
     robot.rotate_left()
+    robot.insertCode(password) -> int
 
 Sensors:
     robot.ultrasonicFront() -> int
@@ -10,7 +11,6 @@ Sensors:
     robot.detectSimbolLeft() -> int
     robot.detectSimbolRight() -> int
     robot.detectDoorFront() -> bool
-    robot.insertCode(password) -> int
 '''
 
 def main():
