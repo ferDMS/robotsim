@@ -1,6 +1,7 @@
 import pygame
 import json
 import math
+from map import Map
 
 pixel_constant = 50
 display_width = 0
@@ -30,6 +31,7 @@ colors = {
 
 gameDisplay = None
 robot = None
+map = None
 
 pygame.init()
 robotImg = pygame.image.load('robot.png')
@@ -41,152 +43,274 @@ crashed = False
 reset = False
 start = True
 
+with open('map.json') as json_file:
+    map_info = json.load(json_file)
+
+
 class Robot:
-    def __init__(self,x,y,w,size):
+    def __init__(self,x,y,w,size,col,row,dir):
+        self.dir = 0
         self.x = x
         self.y = y
+        self.col = col
+        self.row = row
         self.w = w
         self.size = size
-        self.offset = int((pixel_constant - size) * 0.5)
-        self.sensor_range = pixel_constant #int(pixel_constant/2)
+        self.offset = (pixel_constant - size)//2
+        self.sensor_range = pixel_constant
         self.set_position(x,y,w)
         
     def set_position(self,x,y,w):
         self.x = x
         self.y = y
         self.w = w
-
-        orig_rect = robotImg.get_rect()
-        rotated_robot = pygame.transform.rotate(robotImg, w)
-        rot_rect = orig_rect.copy()
-        rot_rect.center = rotated_robot.get_rect().center
-        rotated_robot = rotated_robot.subsurface(rot_rect).copy()
-
-        gameDisplay.blit(rotated_robot, (x + self.offset, y + self.offset))
-        # pygame.draw.line(gameDisplay, green, (x-25, y), (x+25, y))
-        # pygame.draw.line(gameDisplay, green, (x, y-25), (x, y+25))
-        # pygame.draw.line(gameDisplay, red, (x+ int(pixel_constant * 0.5)-25, y + int(pixel_constant * 0.5)), (x+ int(pixel_constant * 0.5)+25, y+ int(pixel_constant * 0.5)))
-        # pygame.draw.line(gameDisplay, red, (x+ int(pixel_constant * 0.5), y+ int(pixel_constant * 0.5)-25), (x+ int(pixel_constant * 0.5), y+ int(pixel_constant * 0.5)+25))
+        box = [pygame.math.Vector2(p) for p in [(0, 0), (self.size, 0), (self.size, -self.size), (0, -self.size)]]
+        box_rotate = [p.rotate(self.w) for p in box]
+        min_box = (min(box_rotate, key=lambda p: p[0])[0], min(box_rotate, key=lambda p: p[1])[1])
+        max_box = (max(box_rotate, key=lambda p: p[0])[0], max(box_rotate, key=lambda p: p[1])[1])
+        pivot = pygame.math.Vector2(self.size//2, -self.size//2)
+        pivot_rotate = pivot.rotate(self.w)
+        pivot_move = pivot_rotate - pivot
+        origin = (self.x - self.size//2 + min_box[0] - pivot_move[0], self.y - self.size//2 - max_box[1] + pivot_move[1])
+        rotated_image = pygame.transform.rotate(robotImg, self.w)
+        gameDisplay.blit(rotated_image, origin)
         pygame.display.update()
         clock.tick(120)
 
     def move_forward(self):
-        angle = self.w
-        x1 = self.x 
-        y1 = self.y 
-        rad = math.radians(angle)
-        x2 = round(math.cos(rad))  + x1
-        y2 = y1 - round(math.sin(rad))
-        generate_map()
-        # Check collisions
-        px1 = self.x + int(pixel_constant * 0.5) + round(math.cos(rad)*self.size*0.5) 
-        py1 = self.y + int(pixel_constant * 0.5) - round(math.sin(rad)*self.size*0.5)
-        for i in range(-int(self.size*0.5)+1,int(self.size*0.5)-1): 
-            px2 = round(math.cos(math.radians(90+angle)) * i) + px1
-            py2 = py1 - round(math.sin(math.radians(90+angle)) * i)
-            is_wall = gameDisplay.get_at((px2,py2)) == colors['black']
-            if is_wall:
-                return
-        self.set_position(x2,y2,angle)
+        if self.ultrasonicFront() > 0 :
+            if self.dir == 0:
+                self.row -= 1
+            if self.dir == 1:
+                self.col -= 1
+            if self.dir == 2:
+                self.row += 1
+            if self.dir == 3:
+                self.col += 1
+            for _ in range(pixel_constant):
+                angle = self.w
+                x1 = self.x 
+                y1 = self.y 
+                rad = math.radians(angle)
+                x2 = round(math.cos(rad)) + x1
+                y2 = y1 - round(math.sin(rad))
+                generate_map()
+                self.set_position(x2,y2,angle)
 
     def move_backward(self):
-        angle = self.w
-        x1 = self.x 
-        y1 = self.y 
-        rad = math.radians(angle)
-        x2 = x1 - round(math.cos(rad))
-        y2 = round(math.sin(rad)) + y1
-        generate_map()
-        # Check collisions
-        px1 = self.x + int(pixel_constant * 0.5) - round(math.cos(rad)*self.size*0.5) 
-        py1 = self.y + int(pixel_constant * 0.5) + round(math.sin(rad)*self.size*0.5)
-        for i in range(-int(self.size*0.5)+1,int(self.size*0.5)-1): 
-            px2 = round(math.cos(math.radians(90+angle)) * i) + px1
-            py2 = py1 - round(math.sin(math.radians(90+angle)) * i)
-            is_wall = gameDisplay.get_at((px2,py2)) == colors['black']
-            if is_wall:
-                return
-        self.set_position(x2,y2,angle)
+        #TODO
+        pass 
     
     def rotate_right(self):
-        generate_map()
-        self.set_position(self.x,self.y,self.w - 1)
+        self.dir = (self.dir - 1 + 4) % 4
+        for _ in range(30):
+            generate_map()
+            self.set_position(self.x,self.y,self.w - 3)
 
     def rotate_left(self):
-        generate_map()
-        self.set_position(self.x,self.y,self.w + 1)
+        self.dir = (self.dir + 1) % 4
+        for _ in range(30):
+            generate_map()
+            self.set_position(self.x,self.y,self.w + 3)
 
-    def get_distance(self,angle):
-        rad = math.radians(angle)
-        x1 = self.x + int(pixel_constant * 0.5) + round(math.cos(rad)*self.size*0.5)
-        y1 = self.y + int(pixel_constant * 0.5) - round(math.sin(rad)*self.size*0.5)
-        for i in range(self.sensor_range):
-            x2 = int(math.cos(math.radians(angle)) * i) + x1
-            y2 = y1 - int(math.sin(math.radians(angle)) * i)
-            x2 = 0 if x2 < 0 else display_width if x2 > display_width else x2
-            y2 = 0 if y2 < 0 else display_height if y2 > display_height else y2
-            is_wall = gameDisplay.get_at((x2,y2)) == colors['black']
-            pygame.draw.line(gameDisplay, red, (x1, y1), (x2, y2))
-            if is_wall:
-                pygame.display.update()
-                clock.tick(120)
-                return i
-        return self.sensor_range
+    def ultrasonicFront(self):
+        distance = None
+        start = 0
+        if self.dir == 0:
+            # row-- until 0
+            for pos in range(self.row, -1, -1):
+                if map.tiles[pos][self.col].North.status in [1, 2]:
+                    distance = start
+                    break
+                start += 1
+            if distance == None:
+                distance = self.row
+            
+        if self.dir == 1:
+            # col-- until 0 
+            for pos in range(self.col, -1, -1):
+                if map.tiles[self.row][pos].West.status in [1, 2]:
+                    distance = start
+                    break
+                start += 1
+            if distance == None:
+                distance = self.col
 
-    def ultrasonic_forward(self):
-        return self.get_distance(self.w)
+        if self.dir == 2:
+            # row++ until max
+            for pos in range(self.row, map.height):
+                if map.tiles[pos][self.col].South.status in [1, 2]:
+                    distance = start
+                    break
+                start += 1
+            if distance == None:
+                distance = map.height - self.row - 1
 
-    def ultrasonic_left(self):
-        return self.get_distance(self.w + 90)
+        if self.dir == 3:
+            # col++ until 0
+            for pos in range(self.col, map.width):
+                if map.tiles[self.row][pos].East.status > 0:
+                    distance = start
+                    break
+                start += 1
+            if distance == None:
+                distance = map.width - self.col - 1 
+        pygame.display.update()
+        clock.tick(120)
+        return distance * 30
 
-    def ultrasonic_back(self):
-        return self.get_distance(self.w + 180)
+    def detectSimbolLeft(self):
+        row = self.row
+        col = self.col
+        if self.dir == 0:
+            if map.tiles[row][col].West.status == 1:
+                return map.tiles[row][col].West.data
+        if self.dir == 1:
+            if map.tiles[row][col].South.status == 1:
+                return map.tiles[row][col].South.data
+        if self.dir == 2:
+            if map.tiles[row][col].East.status == 1:
+                return map.tiles[row][col].East.data
+        if self.dir == 3:
+            if map.tiles[row][col].North.status == 1:
+                return map.tiles[row][col].North.data
+        return None
 
-    def ultrasonic_right(self):
-        return self.get_distance(self.w + 270)
+    def detectSimbolRight(self):
+        row = self.row
+        col = self.col
+        if self.dir == 0:
+            if map.tiles[row][col].East.status == 1:
+                return map.tiles[row][col].East.data
+        if self.dir == 1:
+            if map.tiles[row][col].North.status == 1:
+                return map.tiles[row][col].North.data
+        if self.dir == 2:
+            if map.tiles[row][col].West.status == 1:
+                return map.tiles[row][col].West.data
+        if self.dir == 3:
+            if map.tiles[row][col].South.status == 1:
+                return map.tiles[row][col].South.data
+        return None
 
-    def get_color(self):
-        x = self.x + int(pixel_constant * 0.5)
-        y = self.y + int(pixel_constant * 0.5)
-        generate_map()
-        c = gameDisplay.get_at((x,y))
-        self.set_position(self.x,self.y,self.w)
-        for name, value in colors.items():
-            if value == c:
-                return name
+    def detectDoorFront(self):
+        row = self.row
+        col = self.col
+        if self.dir == 0 and map.tiles[row][col].North.status == 2:
+            return True
+        if self.dir == 1 and map.tiles[row][col].West.status == 2:
+            return True
+        if self.dir == 2 and map.tiles[row][col].South.status == 2:
+            return True
+        if self.dir == 3 and map.tiles[row][col].East.status == 2:
+            return True
+        return False
+
+    def insertCode(self, passw):
+        row = self.row
+        col = self.col
+        if self.dir == 0 and map.tiles[row][col].North.status == 2:
+            if map.tiles[row][col].North.data == passw:
+                map.tiles[row][col].North.status = 0
+                if(row != 0 and map.tiles[row - 1][col].South.data == None):
+                    map.tiles[row - 1][col].South.status = 0
+                generate_map()
+                return True
+        if self.dir == 1 and map.tiles[row][col].West.status == 2:
+            if map.tiles[row][col].West.data == passw:
+                map.tiles[row][col].West.status = 0
+                if(col != 0 and map.tiles[row][col - 1].East.data == None):
+                    map.tiles[row][col - 1].East.status = 0
+                generate_map()
+                return True
+        if self.dir == 2 and map.tiles[row][col].South.status == 2:
+            if map.tiles[row][col].South.data == passw:
+                map.tiles[row][col].South.status = 0
+                if(row != map.height and map.tiles[row + 1][col].North.data == None):
+                    map.tiles[row + 1][col].North.status = 0
+                generate_map()
+                return True
+        if self.dir == 3 and map.tiles[row][col].East.status == 2:
+            if map.tiles[row][col].East.data == passw:
+                map.tiles[row][col].East.status = 0
+                if(row != map.width and map.tiles[row][col + 1].West.data == None):
+                    map.tiles[row][col + 1].West.status = 0
+                generate_map()
+                return True
+        return False
+        
+
+    def getColor(self):
+        row = self.row
+        col = self.col
+        if map.tiles[row][col].color:
+            return map.tiles[row][col].color
+        return 'white'
+
+
+    def debugTile(self):
+        print("(~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)")
+        print("Color: ", map.tiles[self.row][self.col].color)
+        print("North: ", map.tiles[self.row][self.col].North.status, map.tiles[self.row][self.col].North.data)
+        print("South: ", map.tiles[self.row][self.col].South.status, map.tiles[self.row][self.col].South.data)
+        print("East: ", map.tiles[self.row][self.col].East.status, map.tiles[self.row][self.col].East.data)
+        print("West: ", map.tiles[self.row][self.col].West.status, map.tiles[self.row][self.col].West.data)
+        print("(~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)")
+        
 
 
 def generate_map():
     gameDisplay.fill(white)
 
-    # Color tiles
-    for color in map_info['colors']:
-        x = color['x'] * pixel_constant
-        y = color['y'] * pixel_constant
-        c = colors[color['color']]
-        pygame.draw.rect(gameDisplay,c,(x,y,pixel_constant,pixel_constant))
+    for row in range(map.height):
+        for col in range(map.width):
+            #Tile color
+            if map.tiles[row][col].color:
+                x = col * pixel_constant
+                y = row * pixel_constant
+                c = colors[map.tiles[row][col].color]
+                pygame.draw.rect(gameDisplay,c,(x,y,pixel_constant,pixel_constant))
 
-    # Exterior walls
-    pygame.draw.line(gameDisplay, colors['black'], (0, 0), (display_width-1, 0))
-    pygame.draw.line(gameDisplay, colors['black'], (0, 0), (0, display_height-1))
-    pygame.draw.line(gameDisplay, colors['black'], (display_width-1, 0), (display_width-1, display_height-1))
-    pygame.draw.line(gameDisplay, colors['black'], (0, display_height-1), (display_width-1, display_height-1))
+            #Tile walls in North, South, East and West order
+            x1 = [0, 0, 1, 0]
+            y1 = [0, 1, 0, 0]
+            x2 = [1, 1, 1, 0]
+            y2 = [0, 1, 1, 1]
+            wall_colors = [None, ['red','blue','black'], 'magenta']
+            dir = ["North","South","East","West"]
+            #Wall shifting towards the center
+            shift_x = [0, 0, -1, 1]
+            shift_y = [1, -1, 0, 0]
+            for wall_order in range(4):
+                direction_status = getattr(getattr(map.tiles[row][col], dir[wall_order]),"status")
+                if direction_status  != 0 :
+                    x1_pixel = (col + x1[wall_order]) * pixel_constant + shift_x[wall_order] * pixel_constant * 0.02
+                    x2_pixel = (col + x2[wall_order]) * pixel_constant + shift_x[wall_order] * pixel_constant * 0.02
+                    y1_pixel = (row + y1[wall_order]) * pixel_constant + shift_y[wall_order] * pixel_constant * 0.02
+                    y2_pixel = (row + y2[wall_order]) * pixel_constant + shift_y[wall_order] * pixel_constant * 0.02
+                    color = wall_colors[direction_status]
+                    if isinstance(color, list):
+                        direction_data = getattr(getattr(map.tiles[row][col], dir[wall_order]),"data")
+                        if direction_data is None:
+                            color = color[-1]
+                        else:
+                            color = color[int(direction_data)]
+                    pygame.draw.line(gameDisplay, colors[color], (x1_pixel, y1_pixel), (x2_pixel, y2_pixel),5)
 
-    # Inner walls
-    for wall in map_info['walls']:
-        x1 = wall['x1'] * pixel_constant
-        x2 = wall['x2'] * pixel_constant
-        y1 = wall['y1'] * pixel_constant
-        y2 = wall['y2'] * pixel_constant
-        if x1 == x2 or y1 == y2: # This ignores diagonal walls
-            pygame.draw.line(gameDisplay, colors['black'], (x1, y1), (x2, y2))
-    
 
 def setup_map():
     global display_width 
     global display_height 
     global pixel_constant
     global gameDisplay
+    global map
+
+    def is_valid_coordinate(row, col):
+        if row >= map.width or row < 0:
+            return False
+        if col >= map.height or col < 0:
+            return False
+        return True
 
     pixel_constant = map_info['squareSize'] if map_info['squareSize'] else pixel_constant
     display_width = map_info['size']['w'] * pixel_constant
@@ -194,7 +318,23 @@ def setup_map():
 
     gameDisplay = pygame.display.set_mode((display_width,display_height))
 
+    #Map initialization
+    map = Map(map_info['size']['w'],map_info['size']['h'])
+    dir = ["North","South","East","West"]
+    dir_reflection = ["South","North","West","East"]
+    dir_reflection_xy = [(-1,0),(1,0),(0,1),(0,-1)]
+    for tile in map_info['tiles']:
+        map.tiles[tile['row']][tile['col']].color = tile['color']
+        for dir_index in range(len(dir)):
+            setattr(getattr(map.tiles[tile['row']][tile['col']], dir[dir_index]), "status", tile['directions'][dir_index])
+            setattr(getattr(map.tiles[tile['row']][tile['col']], dir[dir_index]), "data", tile['data'][dir_index])
+            if tile['directions'][dir_index] in [1,2]:
+                new_row = tile['row'] + dir_reflection_xy[dir_index][0]
+                new_col = tile['col'] + dir_reflection_xy[dir_index][1]
+                if is_valid_coordinate(new_row, new_col) and getattr(getattr(map.tiles[new_row][new_col], dir_reflection[dir_index]), "status") == 0:
+                    setattr(getattr(map.tiles[new_row][new_col], dir_reflection[dir_index]), "status", 1)     
     generate_map()
+
 
 def setup_robot():
     global robot
@@ -203,15 +343,15 @@ def setup_robot():
     robot_size = int(pixel_constant * 0.5)
     robotImg = pygame.transform.scale(robotImg, (robot_size, robot_size))
     
-    start_x = map_info['start']['x'] * pixel_constant
-    start_y = map_info['start']['y'] * pixel_constant
-    angle = map_info['start']['w']
+    col = map_info['robot_start']['col']
+    row = map_info['robot_start']['row']
 
-    robot = Robot(start_x,start_y,angle,robot_size)
+    start_x = col * pixel_constant + robot_size
+    start_y = row * pixel_constant + robot_size
+    angle = map_info['robot_start']['w']
+    
+    robot = Robot(start_x,start_y,angle,robot_size,col,row,dir)
 
-
-with open('map.json') as json_file:
-    map_info = json.load(json_file)
 
 def main():
     setup_map()
@@ -219,6 +359,7 @@ def main():
     with open("main_program.py") as f:
         code = compile(f.read(), "main_program.py", 'exec')
         exec(code)
+
 
 if __name__ == "__main__":
 
