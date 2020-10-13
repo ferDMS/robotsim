@@ -79,8 +79,8 @@ El mapa cuenta con las siguientes características:
 | **Función** | **Descripción** | **Input/Output** |
 | --- | --- | --- |
 | robot.move\_forward() | Mueve el robot a la baldosa de enfrente | - |
-| robot.rotate\_right() | Gira el robot a la derecha | - |
-| robot.rotate\_left() | Gira el robot a la izquierda | - |
+| robot.rotate\_right() | Gira el robot 90° a la derecha | - |
+| robot.rotate\_left() | Gira el robot 90° a la izquierda | - |
 | robot.insertCode(password) | Inserta un código en la puerta que tenga frente a éste. | Input: stringOutput: bool |
 | robot.ultrasonicFront() | Obtiene la distancia frente al robot | Output: int |
 | robot.getColor() | Obtiene el color de la baldosa en la que el robot se encuentra | Output: string |
