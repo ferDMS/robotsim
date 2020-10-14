@@ -1,6 +1,7 @@
 import pygame
 import json
 import math
+from HuffmanTree import huffman_tree 
 from map import Map
 
 pixel_constant = 50
@@ -238,6 +239,10 @@ class Robot:
                 generate_map()
                 return True
         return False
+
+    def getHuffmanTree(self):
+        return huffman_tree.get_huffman_root()
+
         
 
     def getColor(self):

@@ -36,6 +36,11 @@ def main():
     robot.move_forward()
     robot.move_forward()
     robot.rotate_right()
+    #get Huffman root node
+    root = robot.getHuffmanTree()
+    answer = ""
+    #add decode code here
+    print("Decoded answer: ", answer)
 
 if __name__ == "__main__":
     main()
