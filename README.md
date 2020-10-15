@@ -90,7 +90,7 @@ El mapa cuenta con las siguientes características:
 | robot.getHuffmanTree() | Te regresa el nodo raíz (root) del árbol de Huffman | Output: nodo |
 
 ### Árbol de Huffman
-La función getHuffmanTree() regresa el nodo raíz del árbol de Huffman.
+El método getHuffmanTree() del robot regresa el nodo raíz del árbol de Huffman.
 El nodo tiene la siguiente clase:
 ```bash
 class Node:  
