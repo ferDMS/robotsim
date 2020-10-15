@@ -2,7 +2,8 @@
     "squareSize" : 70,
     "size" : {
         "w":6,
-        "h":8},
+        "h":8
+    },
     "robot_start" : {
         "row" : 7,
         "col" : 0,

@@ -306,9 +306,9 @@ def setup_map():
     global map
 
     def is_valid_coordinate(row, col):
-        if row >= map.width or row < 0:
+        if row >= map.height or row < 0:
             return False
-        if col >= map.height or col < 0:
+        if col >= map.width or col < 0:
             return False
         return True
 
@@ -326,13 +326,14 @@ def setup_map():
     for tile in map_info['tiles']:
         map.tiles[tile['row']][tile['col']].color = tile['color']
         for dir_index in range(len(dir)):
-            setattr(getattr(map.tiles[tile['row']][tile['col']], dir[dir_index]), "status", tile['directions'][dir_index])
-            setattr(getattr(map.tiles[tile['row']][tile['col']], dir[dir_index]), "data", tile['data'][dir_index])
+            if getattr(getattr(map.tiles[tile['row']][tile['col']], dir[dir_index]), "status") == 0:
+                setattr(getattr(map.tiles[tile['row']][tile['col']], dir[dir_index]), "status", tile['directions'][dir_index])
+                setattr(getattr(map.tiles[tile['row']][tile['col']], dir[dir_index]), "data", tile['data'][dir_index])
             if tile['directions'][dir_index] in [1,2]:
                 new_row = tile['row'] + dir_reflection_xy[dir_index][0]
                 new_col = tile['col'] + dir_reflection_xy[dir_index][1]
-                if is_valid_coordinate(new_row, new_col) and getattr(getattr(map.tiles[new_row][new_col], dir_reflection[dir_index]), "status") == 0:
-                    setattr(getattr(map.tiles[new_row][new_col], dir_reflection[dir_index]), "status", 1)     
+                if is_valid_coordinate(new_row, new_col):
+                    setattr(getattr(map.tiles[new_row][new_col], dir_reflection[dir_index]), "status", 1)
     generate_map()
 
 
