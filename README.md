@@ -81,14 +81,24 @@ El mapa cuenta con las siguientes características:
 | robot.move\_forward() | Mueve el robot a la baldosa de enfrente | - |
 | robot.rotate\_right() | Gira el robot 90° a la derecha | - |
 | robot.rotate\_left() | Gira el robot 90° a la izquierda | - |
-| robot.insertCode(password) | Inserta un código en la puerta que tenga frente a éste. | Input: string (3 símbolos)\
-Output: bool |
+| robot.insertCode(password) | Inserta un código en la puerta que tenga frente a éste. | Input: string (3 símbolos  Output: bool |
 | robot.ultrasonicFront() | Obtiene la distancia frente al robot en centímetros; si no detecta nada regresa -1 | Output: int |
 | robot.getColor() | Obtiene el color de la baldosa en la que el robot se encuentra | Output: string |
 | robot.detectSimbolLeft() | Detecta el símbolo a la izquierda | Output: 0/1/None |
 | robot.detectSimbolRight() | Detecta el símbolo a la derecha | Output: 0/1/None |
 | robot.detectDoorFront() | Detecta si frente al robot hay una puerta | Output: bool |
+| robot.getHuffmanTree() | Te regresa el nodo raíz (root) del árbol de Huffman | Output: nodo |
 
+### Árbol de Huffman
+El método getHuffmanTree() te regresa el nodo del árbol de Huffman
+"""class Node:  
+    def __init__(self, freq,data):  
+        self.freq= freq  
+        self.data=data  
+        self.left = None  
+        self.right = None  
+""" 
+Más información: https://www.hackerrank.com/challenges/tree-huffman-decoding/problem 
 
 ### Importante
 
