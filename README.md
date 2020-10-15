@@ -90,15 +90,17 @@ El mapa cuenta con las siguientes características:
 | robot.getHuffmanTree() | Te regresa el nodo raíz (root) del árbol de Huffman | Output: nodo |
 
 ### Árbol de Huffman
-El método getHuffmanTree() te regresa el nodo del árbol de Huffman
-"""class Node:  
+La función getHuffmanTree() regresa el nodo raíz del árbol de Huffman.
+El nodo tiene la siguiente clase:
+```bash
+class Node:  
     def __init__(self, freq,data):  
-        self.freq= freq  
-        self.data=data  
+        self.freq = freq  
+        self.data = data  
         self.left = None  
         self.right = None  
-""" 
-Más información: https://www.hackerrank.com/challenges/tree-huffman-decoding/problem 
+``` 
+Para más información consultar: https://www.hackerrank.com/challenges/tree-huffman-decoding/problem 
 
 ### Importante
 
