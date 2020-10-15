@@ -1,6 +1,7 @@
 import pygame
 import json
 import math
+from HuffmanTree import huffman_tree 
 from map import Map
 
 pixel_constant = 50
@@ -78,7 +79,7 @@ class Robot:
         clock.tick(120)
 
     def move_forward(self):
-        if self.ultrasonicFront() > 0 :
+        if self.ultrasonicFront() > 0 or self.ultrasonicFront() == -1 :
             if self.dir == 0:
                 self.row -= 1
             if self.dir == 1:
@@ -124,7 +125,7 @@ class Robot:
                     break
                 start += 1
             if distance == None:
-                distance = self.row
+                return -1 
             
         if self.dir == 1:
             # col-- until 0 
@@ -134,7 +135,7 @@ class Robot:
                     break
                 start += 1
             if distance == None:
-                distance = self.col
+                return -1 
 
         if self.dir == 2:
             # row++ until max
@@ -144,7 +145,7 @@ class Robot:
                     break
                 start += 1
             if distance == None:
-                distance = map.height - self.row - 1
+                return -1
 
         if self.dir == 3:
             # col++ until 0
@@ -154,7 +155,7 @@ class Robot:
                     break
                 start += 1
             if distance == None:
-                distance = map.width - self.col - 1 
+                return -1 
         pygame.display.update()
         clock.tick(120)
         return distance * 30
@@ -238,6 +239,10 @@ class Robot:
                 generate_map()
                 return True
         return False
+
+    def getHuffmanTree(self):
+        return huffman_tree.get_huffman_root()
+
         
 
     def getColor(self):
@@ -343,6 +348,8 @@ def setup_robot():
 
     robot_size = int(pixel_constant * 0.5)
     robotImg = pygame.transform.scale(robotImg, (robot_size, robot_size))
+    gameIcon = pygame.image.load('roborregos_logo.PNG')
+    pygame.display.set_icon(gameIcon)
     
     col = map_info['robot_start']['col']
     row = map_info['robot_start']['row']
