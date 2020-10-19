@@ -8,8 +8,8 @@ Control:
 Sensors:
     robot.ultrasonicFront() -> int
     robot.getColor() -> string
-    robot.detectSimbolLeft() -> int
-    robot.detectSimbolRight() -> int
+    robot.detectSimbolLeft() -> string
+    robot.detectSimbolRight() -> string
     robot.detectDoorFront() -> bool
 '''
 
