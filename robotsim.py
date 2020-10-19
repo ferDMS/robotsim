@@ -51,6 +51,7 @@ with open('map.json') as json_file:
 class Robot:
     def __init__(self,x,y,w,size,col,row,dir):
         self.dir = 0
+        self.movements = 0
         self.x = x
         self.y = y
         self.col = col
@@ -79,7 +80,8 @@ class Robot:
         clock.tick(120)
 
     def move_forward(self):
-        if self.ultrasonicFront() > 0 or self.ultrasonicFront() == -1 :
+        self.movements += 1
+        if self.ultrasonicFront() > 0 or self.ultrasonicFront() == -1:
             if self.dir == 0:
                 self.row -= 1
             if self.dir == 1:
@@ -103,12 +105,14 @@ class Robot:
         pass 
     
     def rotate_right(self):
+        self.movements += 1
         self.dir = (self.dir - 1 + 4) % 4
         for _ in range(30):
             generate_map()
             self.set_position(self.x,self.y,self.w - 3)
 
     def rotate_left(self):
+        self.movements += 1
         self.dir = (self.dir + 1) % 4
         for _ in range(30):
             generate_map()
@@ -243,8 +247,6 @@ class Robot:
     def getHuffmanTree(self):
         return huffman_tree.get_huffman_root()
 
-        
-
     def getColor(self):
         row = self.row
         col = self.col
@@ -301,6 +303,14 @@ def generate_map():
                         else:
                             color = color[int(direction_data)]
                     pygame.draw.line(gameDisplay, colors[color], (x1_pixel, y1_pixel), (x2_pixel, y2_pixel),5)
+    if robot:
+        myfont = pygame.font.SysFont('Arial', 12)
+        textsurface = myfont.render('Movements = ' + str(robot.movements), False, (0, 0, 0))
+        gameDisplay.blit(textsurface,(display_width-pixel_constant*1.2,0))
+    else:
+        myfont = pygame.font.SysFont('Arial', 12)
+        textsurface = myfont.render('Movements = 0', False, (0, 0, 0))
+        gameDisplay.blit(textsurface,(display_width-pixel_constant*1.2,0))
 
 
 def setup_map():
