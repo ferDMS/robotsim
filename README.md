@@ -41,9 +41,15 @@ El simulador fue adaptado específicamente para los retos de Candidates 2020. En
 	$ cd robotSim
 	```
 
-2. Codificar movimientos del robot en main\_program.py
+3. Instalar dependencias del simulador.
+	
+	```bash
+	$ pip install -r requirements.txt
+	```
 
-3. Simular Programa 
+3. Codificar movimientos del robot en main\_program.py
+
+4. Simular Programa 
 	```bash
 	$ python robotsim.py
 	```
@@ -83,11 +89,11 @@ El mapa cuenta con las siguientes características:
 | robot.rotate\_left() | Gira el robot 90° a la izquierda | - |
 | robot.insertCode(password) | Inserta un código en la puerta que tenga frente a éste. | Input: string (3 símbolos  Output: bool |
 | robot.ultrasonicFront() | Obtiene la distancia frente al robot en centímetros; si no detecta nada regresa -1 | Output: int |
-| robot.getColor() | Obtiene el color de la baldosa en la que el robot se encuentra | Output: string |
-| robot.detectSimbolLeft() | Detecta el símbolo a la izquierda | Output: 0/1/None |
-| robot.detectSimbolRight() | Detecta el símbolo a la derecha | Output: 0/1/None |
+| robot.getColor() | Obtiene el color de la baldosa en la que el robot se encuentra | Output: string ('green','yellow','white) |
+| robot.detectSimbolLeft() | Detecta el símbolo a la izquierda | Output: '0'/'1'/None |
+| robot.detectSimbolRight() | Detecta el símbolo a la derecha | Output: '0'/'1'/None |
 | robot.detectDoorFront() | Detecta si frente al robot hay una puerta | Output: bool |
-| robot.getHuffmanTree() | Te regresa el nodo raíz (root) del árbol de Huffman | Output: nodo |
+| robot.getHuffmanTree() | Te regresa el nodo raíz (root) del árbol de Huffman | Output: Nodo |
 
 ### Árbol de Huffman
 El método getHuffmanTree() del robot regresa el nodo raíz del árbol de Huffman.
