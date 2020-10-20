@@ -2,6 +2,7 @@ import pygame
 import json
 import math
 from HuffmanTree import huffman_tree 
+from coord import Coord 
 from map import Map
 
 pixel_constant = 50
@@ -52,6 +53,7 @@ class Robot:
     def __init__(self,x,y,w,size,col,row,dir):
         self.dir = 0
         self.movements = 0
+        self.points = 0
         self.x = x
         self.y = y
         self.col = col
@@ -254,6 +256,43 @@ class Robot:
             return map.tiles[row][col].color
         return 'white'
 
+    def sendMessageRescueBase(self, coordinate, path = None):
+        row = coordinate.x
+        col = coordinate.y
+        if map.is_valid_coordinate(row, col) and map.tiles[row][col].envType == "people":
+            map.tiles[row][col].envType = "blank"
+            self.points += 5
+            if path and self.__verifyPath(path):
+                self.points += 20
+            return True
+        self.points -= 10
+        return False
+
+    def sendMessageExplorationBase(self, coordinate):
+        row = coordinate.x
+        col = coordinate.y
+        if map.is_valid_coordinate(row, col) and map.tiles[row][col].envType == "collapse":
+            self.points += 5
+            return True
+        self.points -= 10
+        return False
+
+    def __verifyPath(self,path): # path : ['L', 'R', 'U', 'D'...]
+        direction_deltas = {'L': (-1,0), 'R': (1,0), 'U': (0,-1), 'D': (0,1)}
+        row = self.row
+        col = self.col
+        for direction in path:
+            row += direction_deltas[direction][1]
+            col += direction_deltas[direction][0]
+            if not map.is_valid_coordinate(row, col):
+                return False
+            if map.tiles[row][col].envType == "collapse":
+                return False
+            if map.tiles[row][col].envType == "fire":
+                return False
+        if map.tiles[row][col].envType == "safe":
+            return True
+        return False
 
     def debugTile(self):
         print("(~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)")
@@ -263,8 +302,8 @@ class Robot:
         print("East: ", map.tiles[self.row][self.col].East.status, map.tiles[self.row][self.col].East.data)
         print("West: ", map.tiles[self.row][self.col].West.status, map.tiles[self.row][self.col].West.data)
         print("(~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)")
-        
 
+    
 
 def generate_map():
     gameDisplay.fill(white)
@@ -307,10 +346,14 @@ def generate_map():
         myfont = pygame.font.SysFont('Arial', 12)
         textsurface = myfont.render('Movements = ' + str(robot.movements), False, (0, 0, 0))
         gameDisplay.blit(textsurface,(display_width-pixel_constant*1.2,0))
+        textsurface = myfont.render('Points = ' + str(robot.points), False, (0, 0, 0))
+        gameDisplay.blit(textsurface,(display_width-pixel_constant*1.2,0.2*pixel_constant))
     else:
         myfont = pygame.font.SysFont('Arial', 12)
         textsurface = myfont.render('Movements = 0', False, (0, 0, 0))
         gameDisplay.blit(textsurface,(display_width-pixel_constant*1.2,0))
+        textsurface = myfont.render('Points = 0', False, (0, 0, 0))
+        gameDisplay.blit(textsurface,(display_width-pixel_constant*1.2,0.2*pixel_constant))
 
 
 def setup_map():
@@ -319,13 +362,6 @@ def setup_map():
     global pixel_constant
     global gameDisplay
     global map
-
-    def is_valid_coordinate(row, col):
-        if row >= map.height or row < 0:
-            return False
-        if col >= map.width or col < 0:
-            return False
-        return True
 
     pixel_constant = map_info['squareSize'] if map_info['squareSize'] else pixel_constant
     display_width = map_info['size']['w'] * pixel_constant
@@ -347,7 +383,7 @@ def setup_map():
             if tile['directions'][dir_index] in [1,2]:
                 new_row = tile['row'] + dir_reflection_xy[dir_index][0]
                 new_col = tile['col'] + dir_reflection_xy[dir_index][1]
-                if is_valid_coordinate(new_row, new_col):
+                if map.is_valid_coordinate(new_row, new_col):
                     setattr(getattr(map.tiles[new_row][new_col], dir_reflection[dir_index]), "status", 1)
     generate_map()
 
