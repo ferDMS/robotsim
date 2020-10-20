@@ -32,10 +32,9 @@ class Map:
             for y in range(self.height):
                 self.tiles[y][x] = Tile()
 
-class Coord:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-
-    def __str__(self):
-        return "("+str(self.x)+","+str(self.y)+")"
+    def is_valid_coordinate(self, row, col):
+        if row >= self.height or row < 0:
+            return False
+        if col >= self.width or col < 0:
+            return False
+        return True

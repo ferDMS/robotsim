@@ -2,6 +2,7 @@ import pygame
 import json
 import math
 from HuffmanTree import huffman_tree 
+from coord import Coord 
 from map import Map
 
 pixel_constant = 50
@@ -52,7 +53,7 @@ class Robot:
     def __init__(self,x,y,w,size,col,row,dir):
         self.dir = 0
         self.movements = 0
-        self.points = 300
+        self.points = 0
         self.x = x
         self.y = y
         self.col = col
@@ -82,7 +83,6 @@ class Robot:
 
     def move_forward(self):
         self.movements += 1
-        self.points -= 1
         if self.ultrasonicFront() > 0 or self.ultrasonicFront() == -1:
             if self.dir == 0:
                 self.row -= 1
@@ -108,7 +108,6 @@ class Robot:
     
     def rotate_right(self):
         self.movements += 1
-        self.points -= 1
         self.dir = (self.dir - 1 + 4) % 4
         for _ in range(30):
             generate_map()
@@ -116,7 +115,6 @@ class Robot:
 
     def rotate_left(self):
         self.movements += 1
-        self.points -= 1
         self.dir = (self.dir + 1) % 4
         for _ in range(30):
             generate_map()
@@ -258,10 +256,10 @@ class Robot:
             return map.tiles[row][col].color
         return 'white'
 
-    def sendMessageRescueBase(self, path = None):
-        row = self.row
-        col = self.col
-        if map.tiles[row][col].envType == "people":
+    def sendMessageRescueBase(self, coordinate, path = None):
+        row = coordinate.x
+        col = coordinate.y
+        if map.is_valid_coordinate(row, col) and map.tiles[row][col].envType == "people":
             map.tiles[row][col].envType = "blank"
             self.points += 5
             if path and self.__verifyPath(path):
@@ -270,10 +268,10 @@ class Robot:
         self.points -= 10
         return False
 
-    def sendMessageExplorationBase(self):
-        row = self.row
-        col = self.col
-        if map.tiles[row][col].envType == "collapse":
+    def sendMessageExplorationBase(self, coordinate):
+        row = coordinate.x
+        col = coordinate.y
+        if map.is_valid_coordinate(row, col) and map.tiles[row][col].envType == "collapse":
             self.points += 5
             return True
         self.points -= 10
@@ -356,7 +354,7 @@ def generate_map():
         myfont = pygame.font.SysFont('Arial', 12)
         textsurface = myfont.render('Movements = 0', False, (0, 0, 0))
         gameDisplay.blit(textsurface,(display_width-pixel_constant*1.2,0))
-        textsurface = myfont.render('Points = 300', False, (0, 0, 0))
+        textsurface = myfont.render('Points = 0', False, (0, 0, 0))
         gameDisplay.blit(textsurface,(display_width-pixel_constant*1.2,0.2*pixel_constant))
 
 
@@ -366,13 +364,6 @@ def setup_map():
     global pixel_constant
     global gameDisplay
     global map
-
-    def is_valid_coordinate(row, col):
-        if row >= map.height or row < 0:
-            return False
-        if col >= map.width or col < 0:
-            return False
-        return True
 
     pixel_constant = map_info['squareSize'] if map_info['squareSize'] else pixel_constant
     display_width = map_info['size']['w'] * pixel_constant
@@ -394,7 +385,7 @@ def setup_map():
             if tile['directions'][dir_index] in [1,2]:
                 new_row = tile['row'] + dir_reflection_xy[dir_index][0]
                 new_col = tile['col'] + dir_reflection_xy[dir_index][1]
-                if is_valid_coordinate(new_row, new_col):
+                if map.is_valid_coordinate(new_row, new_col):
                     setattr(getattr(map.tiles[new_row][new_col], dir_reflection[dir_index]), "status", 1)
     generate_map()
 
