@@ -284,9 +284,7 @@ class Robot:
         for direction in path:
             row += direction_deltas[direction][1]
             col += direction_deltas[direction][0]
-            if row < 0 or col < 0:
-                return False
-            if row >= map_info['size']['h'] or col >= map_info['size']['w']:
+            if not map.is_valid_coordinate(row, col):
                 return False
             if map.tiles[row][col].envType == "collapse":
                 return False
