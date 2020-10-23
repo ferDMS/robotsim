@@ -14,33 +14,87 @@ Sensors:
 '''
 
 def main():
-    robot.move_forward()
-    robot.move_forward()
+    ###################################################
+    #Test 0: Debugging de mapa y ultrasónicos
+    ###################################################
+    # robot.move_forward()
+    # robot.rotate_right()
+    # robot.move_forward()
+    # robot.rotate_left()
+    # robot.putOutFireFront()
+    # robot.move_forward()
+    # robot.debugTile()
+    # robot.rotate_right()
+    # robot.debugTile()
+    # robot.rotate_right()
+    # robot.debugTile()
+    # robot.rotate_right()
+    # robot.debugTile()
+    
+    ###################################
+    #Test 1: Robot eliminado por fuego
+    ###################################
+    # robot.move_forward()
+    # robot.rotate_right()
+    # robot.move_forward()
+    # robot.rotate_left()
+    # robot.move_forward()
+    # robot.move_forward()
+    # robot.move_forward()
+
+
+    ###################################
+    #Test 2: Robot atrapado en derrumbe
+    ###################################
+    # robot.move_forward()
+    # robot.move_forward()
+    # robot.move_forward()
+    # robot.rotate_right()
+    # robot.move_forward()
+    # robot.move_forward()
+    # robot.rotate_right()
+    # robot.move_forward()
+    # robot.rotate_right()
+    # robot.rotate_right()
+    # robot.move_forward()
+    # robot.rotate_right()
+    # robot.move_forward()
+
+    ############################################
+    #Test 3: Robot apaga fuego, envía correctamente
+    # mensaje de derrumbe y salva personas
+    ############################################
     robot.move_forward()
     robot.rotate_right()
     robot.move_forward()
-    robot.insertCode("011")
-    robot.move_forward()
+    robot.rotate_left()
+    print("Fire in the front:", robot.detectFireFront())
+    robot.putOutFireFront()
+    robot.rotate_right()
     robot.move_forward()
     robot.rotate_left()
     robot.move_forward()
-    robot.insertCode("110")
+    robot.move_forward()
+    print("Collapse alert successfull:",robot.sendMessageExplorationBase(Coord(3,2)))
     robot.move_forward()
     robot.rotate_right()
     robot.move_forward()
-    robot.move_forward()
-    robot.rotate_left()
-    robot.move_forward()
-    robot.rotate_left()
-    robot.move_forward()
-    robot.move_forward()
-    robot.move_forward()
-    robot.rotate_right()
-    #get Huffman root node
-    root = robot.getHuffmanTree()
-    answer = ""
-    #add decode code here
-    print("Decoded answer: ", answer)
+    print("People saved?",robot.sendMessageRescueBase(Coord(4,3), ["U", "U"]))
+
+    ###################################################
+    #Test 4: Robot apaga fuego y envía path incorrecto
+    ###################################################
+    # robot.rotate_right()
+    # robot.move_forward()
+    # robot.move_forward()
+    # robot.move_forward()
+    # robot.putOutFireFront()
+    # robot.rotate_left()
+    # robot.move_forward()
+    # robot.move_forward()
+    # robot.move_forward()
+    # robot.sendMessageRescueBase(Coord(4,3), ["L", "L", "L", "D", "D"])
+    
 
 if __name__ == "__main__":
     main()

@@ -6,8 +6,7 @@ class DirectionStatus(IntEnum):
 
 class Direction:
     def __init__(self):
-        self.status = DirectionStatus.Free 
-        self.data = None
+        self.status = DirectionStatus.Free
         
 
 class Tile:
@@ -18,7 +17,7 @@ class Tile:
         self.East = Direction()
         self.West = Direction()
         self.envType = "clear" # "fire", "people", "collapse", "clear", "safe"
-        self.envData = None
+        self.envData = 0
 
 class Map:
     def __init__(self, width, height):
