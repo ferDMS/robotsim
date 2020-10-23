@@ -121,7 +121,7 @@ class Robot:
                         self.broken = True
                         gameDisplay.fill(white)
                         myfont = pygame.font.SysFont('Arial', 12)
-                        textsurface = myfont.render("Robot stuck in colapsed zone!", False, (0, 0, 0))
+                        textsurface = myfont.render("Robot stuck in collapsed zone!", False, (0, 0, 0))
                         gameDisplay.blit(textsurface,(display_width/2-pixel_constant*1.2,0))
                     map.tiles[self.row][self.col].envData = 1
 
@@ -224,25 +224,13 @@ class Robot:
         #   1 -> West
         #   2 -> South
         #   3 -> East
-        row = self.row
-        col = self.col
-        if self.dir == 0:
-            if row > 0 and map.tiles[row - 1][col].envType == "fire":
-                return True
-            return False
-        if self.dir == 1:
-            if col > 0 and map.tiles[row][col - 1].envType == "fire":
-                return True
-            return False
-        if self.dir == 2:
-            if row < map.height-1 and map.tiles[row + 1][col].envType == "fire":
-                return True
-            return False
-        if self.dir == 3:
-            if col < map.width-1 and map.tiles[row][col + 1].envType == "fire":
-                return True
-            return False
-        return False
+        row_directions = [-1, 0, 1, 0]
+        col_directions = [0, -1, 0, 1]
+        row = self.row + row_directions[self.dir]
+        col = self.col + col_directions[self.dir]
+        if not map.is_valid_coordinate(row, col):
+                return False
+        return map.tiles[row][col].envType == "fire"
 
     def  putOutFireFront(self):
         if self.detectFireFront():
@@ -260,6 +248,7 @@ class Robot:
                 return
             map.tiles[row][col].color = "white"
             map.tiles[row][col].envType = "clear"
+            generate_map()
             self.points += 10
 
     def detectSimbolLeft(self):
@@ -358,6 +347,7 @@ class Robot:
         if map.is_valid_coordinate(row, col) and map.tiles[row][col].envType == "people":
             map.tiles[row][col].envType = "clear"
             map.tiles[row][col].color = "white"
+            generate_map()
             self.points += 5
             if path:
                 if self.__verifyPath(path):

@@ -1,5 +1,3 @@
-from coord import Coord
-
 '''
 Control:
     robot.move_forward()
@@ -19,19 +17,19 @@ def main():
     ###################################################
     #Test 0: Debugging de mapa y ultrasónicos
     ###################################################
-    robot.move_forward()
-    robot.rotate_right()
-    robot.move_forward()
-    robot.rotate_left()
-    robot.putOutFireFront()
-    robot.move_forward()
-    robot.debugTile()
-    robot.rotate_right()
-    robot.debugTile()
-    robot.rotate_right()
-    robot.debugTile()
-    robot.rotate_right()
-    robot.debugTile()
+    # robot.move_forward()
+    # robot.rotate_right()
+    # robot.move_forward()
+    # robot.rotate_left()
+    # robot.putOutFireFront()
+    # robot.move_forward()
+    # robot.debugTile()
+    # robot.rotate_right()
+    # robot.debugTile()
+    # robot.rotate_right()
+    # robot.debugTile()
+    # robot.rotate_right()
+    # robot.debugTile()
     
     ###################################
     #Test 1: Robot eliminado por fuego
@@ -66,22 +64,21 @@ def main():
     #Test 3: Robot apaga fuego, envía correctamente
     # mensaje de derrumbe y salva personas
     ############################################
-    # robot.move_forward()
-    # robot.rotate_right()
-    # robot.move_forward()
-    # robot.rotate_left()
-    # robot.putOutFireFront()
-    # robot.rotate_right()
-    # robot.move_forward()
-    # robot.rotate_left()
-    # robot.move_forward()
-    # robot.move_forward()
-    # print("Collapse alert successfull:",robot.sendMessageExplorationBase(Coord(3,2)))
-    # robot.move_forward()
-    # robot.rotate_right()
-    # robot.move_forward()
-    # print("People saved?",robot.sendMessageRescueBase(Coord(4,3), ["U", "U"]))
-    # robot.rotate_right()
+    robot.move_forward()
+    robot.rotate_right()
+    robot.move_forward()
+    robot.rotate_left()
+    robot.putOutFireFront()
+    robot.rotate_right()
+    robot.move_forward()
+    robot.rotate_left()
+    robot.move_forward()
+    robot.move_forward()
+    print("Collapse alert successfull:",robot.sendMessageExplorationBase(Coord(3,2)))
+    robot.move_forward()
+    robot.rotate_right()
+    robot.move_forward()
+    print("People saved?",robot.sendMessageRescueBase(Coord(4,3), ["U", "U"]))
 
     ###################################################
     #Test 4: Robot apaga fuego y envía path incorrecto
