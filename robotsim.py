@@ -26,7 +26,7 @@ colors = {
     'red' : (255,0,0),
     'blue' : (0,0,255),
     'green' : (0,255,0),
-    'magenta' : (255,0,255),
+    'pink' : (255,105,180),
     'yellow' : (255,255,0),
     'cyan' : (0,255,255)
 }
@@ -51,7 +51,7 @@ with open('map.json') as json_file:
 
 class Robot:
     def __init__(self,x,y,w,size,col,row,dir):
-        self.dir = 0
+        self.dir = dir
         self.movements = 0
         self.points = 0
         self.x = x
@@ -63,6 +63,7 @@ class Robot:
         self.offset = (pixel_constant - size)//2
         self.sensor_range = pixel_constant
         self.set_position(x,y,w)
+        self.broken = False
         
     def set_position(self,x,y,w):
         self.x = x
@@ -82,81 +83,129 @@ class Robot:
         clock.tick(120)
 
     def move_forward(self):
-        self.movements += 1
-        if self.ultrasonicFront() > 0 or self.ultrasonicFront() == -1:
-            if self.dir == 0:
-                self.row -= 1
-            if self.dir == 1:
-                self.col -= 1
-            if self.dir == 2:
-                self.row += 1
-            if self.dir == 3:
-                self.col += 1
-            for _ in range(pixel_constant):
-                angle = self.w
-                x1 = self.x 
-                y1 = self.y 
-                rad = math.radians(angle)
-                x2 = round(math.cos(rad)) + x1
-                y2 = y1 - round(math.sin(rad))
-                generate_map()
-                self.set_position(x2,y2,angle)
+        # Map dir:
+        #   0 -> North
+        #   1 -> West
+        #   2 -> South
+        #   3 -> East
+        if not self.broken:
+            self.movements += 1
+            if self.ultrasonicFront():
+                if self.dir == 0:
+                    self.row -= 1
+                if self.dir == 1:
+                    self.col -= 1
+                if self.dir == 2:
+                    self.row += 1
+                if self.dir == 3:
+                    self.col += 1
+                for _ in range(pixel_constant):
+                    angle = self.w
+                    x1 = self.x 
+                    y1 = self.y 
+                    rad = math.radians(angle)
+                    x2 = round(math.cos(rad)) + x1
+                    y2 = y1 - round(math.sin(rad))
+                    generate_map()
+                    self.set_position(x2,y2,angle)
+                if map.tiles[self.row][self.col].envType == "fire":
+                    #finish
+                    self.broken = True
+                    gameDisplay.fill(white)
+                    myfont = pygame.font.SysFont('Arial', 12)
+                    textsurface = myfont.render("Robot eliminated by fire!", False, (0, 0, 0))
+                    gameDisplay.blit(textsurface,(display_width/2-pixel_constant*1.2,0))
+                if map.tiles[self.row][self.col].envType == "collapse":
+                    if map.tiles[self.row][self.col].envData:
+                        #finish
+                        self.broken = True
+                        gameDisplay.fill(white)
+                        myfont = pygame.font.SysFont('Arial', 12)
+                        textsurface = myfont.render("Robot stuck in colapsed zone!", False, (0, 0, 0))
+                        gameDisplay.blit(textsurface,(display_width/2-pixel_constant*1.2,0))
+                    map.tiles[self.row][self.col].envData = 1
 
     def move_backward(self):
         #TODO
         pass 
     
     def rotate_right(self):
-        self.movements += 1
-        self.dir = (self.dir - 1 + 4) % 4
-        for _ in range(30):
-            generate_map()
-            self.set_position(self.x,self.y,self.w - 3)
+        if not self.broken:
+            self.movements += 1
+            self.dir = (self.dir - 1 + 4) % 4
+            for _ in range(30):
+                generate_map()
+                self.set_position(self.x,self.y,self.w - 3)
 
     def rotate_left(self):
-        self.movements += 1
-        self.dir = (self.dir + 1) % 4
-        for _ in range(30):
-            generate_map()
-            self.set_position(self.x,self.y,self.w + 3)
+        if not self.broken:
+            self.movements += 1
+            self.dir = (self.dir + 1) % 4
+            for _ in range(30):
+                generate_map()
+                self.set_position(self.x,self.y,self.w + 3)
 
     def ultrasonicFront(self):
+        return self.getDistance(0)
+
+    def ultrasonicRight(self):
+        return self.getDistance(1)
+
+    def ultrasonicLeft(self):
+        return self.getDistance(2)
+
+    def getDistance(self, dir_ultrasonic):
+        # dir:
+        #   Front: 0
+        #   Right: 1
+        #   Left: 2
+        # Map dir:
+        #   0 -> North
+        #   1 -> West
+        #   2 -> South
+        #   3 -> East
+        dirs = [[0, 1, 2, 3],
+                [3, 0, 1, 2],
+                [1, 2, 3, 0]]
+
         distance = None
         start = 0
-        if self.dir == 0:
+        distance_direction = dirs[dir_ultrasonic][self.dir]
+
+        if distance_direction == 0:
             # row-- until 0
             for pos in range(self.row, -1, -1):
-                if map.tiles[pos][self.col].North.status in [1, 2]:
+                if map.tiles[pos][self.col].North.status == 1:
                     distance = start
                     break
                 start += 1
             if distance == None:
                 return -1 
             
-        if self.dir == 1:
+        if distance_direction == 1:
             # col-- until 0 
             for pos in range(self.col, -1, -1):
-                if map.tiles[self.row][pos].West.status in [1, 2]:
+                if map.tiles[self.row][pos].West.status == 1:
                     distance = start
                     break
                 start += 1
             if distance == None:
                 return -1 
 
-        if self.dir == 2:
+        if distance_direction == 2:
             # row++ until max
             for pos in range(self.row, map.height):
-                if map.tiles[pos][self.col].South.status in [1, 2]:
+                if map.tiles[pos][self.col].South.status == 1:
                     distance = start
                     break
                 start += 1
             if distance == None:
                 return -1
 
-        if self.dir == 3:
+        if distance_direction == 3:
             # col++ until 0
             for pos in range(self.col, map.width):
-                if map.tiles[self.row][pos].East.status > 0:
+                if map.tiles[self.row][pos].East.status == 1:
                     distance = start
                     break
                 start += 1
@@ -165,6 +214,62 @@ class Robot:
         pygame.display.update()
         clock.tick(120)
         return distance * 30
+
+    def scanEnvironment(self):
+        return map.tiles[self.row][self.col].envType
+
+    def detectFireFront(self):
+        # Map dir:
+        #   0 -> North
+        #   1 -> West
+        #   2 -> South
+        #   3 -> East
+        row = self.row
+        col = self.col
+        if self.dir == 0:
+            if row > 0 and map.tiles[row - 1][col].envType == "fire":
+                return True
+            return False
+        if self.dir == 1:
+            if col > 0 and map.tiles[row][col - 1].envType == "fire":
+                return True
+            return False
+        if self.dir == 2:
+            if row < map.height-1 and map.tiles[row + 1][col].envType == "fire":
+                return True
+            return False
+        if self.dir == 3:
+            if col < map.width-1 and map.tiles[row][col + 1].envType == "fire":
+                return True
+            return False
+        return False
+
+    def  putOutFireFront(self):
+        if self.detectFireFront():
+            # Map dir:
+            #   0 -> North
+            #   1 -> West
+            #   2 -> South
+            #   3 -> East
+            row = self.row
+            col = self.col
+            if self.dir == 0:
+                if row > 0:
+                    map.tiles[row - 1][col].color == "white"
+                    map.tiles[row - 1][col].envType == "clear"
+            if self.dir == 1:
+                if col > 0:
+                    map.tiles[row][col - 1].color == "white"
+                    map.tiles[row][col - 1].envType == "clear"
+            if self.dir == 2:
+                if row < map.height-1:
+                    map.tiles[row + 1][col].color == "white"
+                    map.tiles[row + 1][col].envType == "clear"
+                return False
+            if self.dir == 3:
+                if col < map.width-1:
+                    map.tiles[row][col + 1].color == "white"
+                    map.tiles[row][col + 1].envType == "clear"
 
     def detectSimbolLeft(self):
         row = self.row
@@ -296,11 +401,16 @@ class Robot:
 
     def debugTile(self):
         print("(~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)")
+        print("Position:", self.row, self.col,)
         print("Color: ", map.tiles[self.row][self.col].color)
-        print("North: ", map.tiles[self.row][self.col].North.status, map.tiles[self.row][self.col].North.data)
-        print("South: ", map.tiles[self.row][self.col].South.status, map.tiles[self.row][self.col].South.data)
-        print("East: ", map.tiles[self.row][self.col].East.status, map.tiles[self.row][self.col].East.data)
-        print("West: ", map.tiles[self.row][self.col].West.status, map.tiles[self.row][self.col].West.data)
+        print("Color: ", map.tiles[self.row][self.col].envType)
+        print("North: ", map.tiles[self.row][self.col].North.status, map.tiles[self.row][self.col].North.status)
+        print("South: ", map.tiles[self.row][self.col].South.status, map.tiles[self.row][self.col].South.status)
+        print("East: ", map.tiles[self.row][self.col].East.status, map.tiles[self.row][self.col].East.status)
+        print("West: ", map.tiles[self.row][self.col].West.status, map.tiles[self.row][self.col].West.status)
+        print("Front", self.ultrasonicFront())
+        print("Left", self.ultrasonicLeft())
+        print("Right", self.ultrasonicRight())
         print("(~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)")
 
     
@@ -322,7 +432,6 @@ def generate_map():
             y1 = [0, 1, 0, 0]
             x2 = [1, 1, 1, 0]
             y2 = [0, 1, 1, 1]
-            wall_colors = [None, ['red','blue','black'], 'magenta']
             dir = ["North","South","East","West"]
             #Wall shifting towards the center
             shift_x = [0, 0, -1, 1]
@@ -334,13 +443,13 @@ def generate_map():
                     x2_pixel = (col + x2[wall_order]) * pixel_constant + shift_x[wall_order] * pixel_constant * 0.02
                     y1_pixel = (row + y1[wall_order]) * pixel_constant + shift_y[wall_order] * pixel_constant * 0.02
                     y2_pixel = (row + y2[wall_order]) * pixel_constant + shift_y[wall_order] * pixel_constant * 0.02
-                    color = wall_colors[direction_status]
-                    if isinstance(color, list):
-                        direction_data = getattr(getattr(map.tiles[row][col], dir[wall_order]),"data")
-                        if direction_data is None:
-                            color = color[-1]
-                        else:
-                            color = color[int(direction_data)]
+                    color = "black"
+                    # if isinstance(color, list):
+                    #     direction_data = getattr(getattr(map.tiles[row][col], dir[wall_order]),"data")
+                    #     if direction_data is None:
+                    #         color = color[-1]
+                    #     else:
+                    #         color = color[int(direction_data)]
                     pygame.draw.line(gameDisplay, colors[color], (x1_pixel, y1_pixel), (x2_pixel, y2_pixel),5)
     if robot:
         myfont = pygame.font.SysFont('Arial', 12)
@@ -374,13 +483,15 @@ def setup_map():
     dir = ["North","South","East","West"]
     dir_reflection = ["South","North","West","East"]
     dir_reflection_xy = [(-1,0),(1,0),(0,1),(0,-1)]
+    #fire", "people", "collapse", "clear", "safe"
+    env_colors = {"pink":"collapse", "yellow":"fire", "white":"clear", "cyan":"safe", "red":"people"}
     for tile in map_info['tiles']:
         map.tiles[tile['row']][tile['col']].color = tile['color']
+        map.tiles[tile['row']][tile['col']].envType = env_colors[tile['color']]
         for dir_index in range(len(dir)):
             if getattr(getattr(map.tiles[tile['row']][tile['col']], dir[dir_index]), "status") == 0:
                 setattr(getattr(map.tiles[tile['row']][tile['col']], dir[dir_index]), "status", tile['directions'][dir_index])
-                setattr(getattr(map.tiles[tile['row']][tile['col']], dir[dir_index]), "data", tile['data'][dir_index])
-            if tile['directions'][dir_index] in [1,2]:
+            if tile['directions'][dir_index] == 1:
                 new_row = tile['row'] + dir_reflection_xy[dir_index][0]
                 new_col = tile['col'] + dir_reflection_xy[dir_index][1]
                 if map.is_valid_coordinate(new_row, new_col):
@@ -389,6 +500,11 @@ def setup_map():
 
 
 def setup_robot():
+    # Map dir:
+        #   0 -> North
+        #   1 -> West
+        #   2 -> South
+        #   3 -> East
     global robot
     global robotImg
 
@@ -403,6 +519,8 @@ def setup_robot():
     start_x = col * pixel_constant + robot_size
     start_y = row * pixel_constant + robot_size
     angle = map_info['robot_start']['w']
+    dic_dir = {0:3, 90:0, 180:1, 270:2}
+    dir = dic_dir[angle]
     
     robot = Robot(start_x,start_y,angle,robot_size,col,row,dir)
 

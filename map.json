@@ -1,133 +1,134 @@
 {
     "squareSize" : 70,
     "size" : {
-        "w":6,
+        "w":8,
         "h":8
     },
     "robot_start" : {
-        "row" : 7,
+        "row" : 0,
         "col" : 0,
-        "w" : 90
+        "w" : 0
     },
     "tiles" : [
+        {
+            "row":0,
+            "col":0,
+            "color" : "cyan",
+            "directions" : [0, 0, 0, 0]
+        },
         {
             "row":6,
             "col":0,
             "color" : "white",
-            "directions" : [0, 0, 1, 0],
-            "data" : [null, null, "1", null]
+            "directions" : [0, 0, 1, 0]
         },
         {
             "row":5,
             "col":0,
-            "color" : "white",
-            "directions" : [0, 0, 1, 1],
-            "data" : [null, null, "1", "0"]
+            "color" : "red",
+            "directions" : [0, 0, 1, 1]
         },
         {
             "row":4,
             "col":0,
             "color" : "yellow",
-            "directions" : [0, 0, 0, 0],
-            "data" : [null, null, null, null]
+            "directions" : [0, 0, 0, 1]
         },
         {
             "row":4,
             "col":1,
-            "color" : "white",
-            "directions" : [1, 0, 2, 0],
-            "data" : ["0", null, "011", null]
+            "color" : "cyan",
+            "directions" : [1, 0, 1, 0]
         },
         {
             "row":4,
             "col":3,
-            "color" : "green",
-            "directions" : [0, 0, 0, 0],
-            "data" : [null, null, null, null]
+            "color" : "pink",
+            "directions" : [0, 0, 0, 0]
+        },
+        {
+            "row":4,
+            "col":5,
+            "color" : "yellow",
+            "directions" : [0, 0, 1, 0]
         },
         {
             "row":3,
             "col":3,
-            "color" : "white",
-            "directions" : [2, 0, 1, 0],
-            "data" : ["110", null, "0", null]
+            "color" : "red",
+            "directions" : [1, 0, 1, 0]
         },
         {
             "row":2,
             "col":3,
-            "color" : "green",
-            "directions" : [0, 0, 0, 0],
-            "data" : [null, null, null, null]
+            "color" : "pink",
+            "directions" : [0, 0, 0, 0]
         },
         {
             "row":2,
             "col":5,
             "color" : "yellow",
-            "directions" : [0, 0, 0, 0],
-            "data" : [null, null, null, null]
+            "directions" : [0, 0, 0, 0]
         },
         {
             "row":1,
             "col":5,
             "color" : "yellow",
-            "directions" : [0, 0, 0, 0],
-            "data" : [null, null, null, null]
+            "directions" : [0, 0, 0, 0]
         },
         {
             "row":1,
             "col":4,
-            "color" : "white",
-            "directions" : [1, 0, 0, 0],
-            "data" : ["1", null, null, null]
+            "color" : "cyan",
+            "directions" : [1, 0, 0, 0]
         },
         {
             "row":1,
             "col":2,
             "color" : "yellow",
-            "directions" : [1, 0, 0, 0],
-            "data" : ["1", null, null, null]
+            "directions" : [1, 0, 0, 0]
         },
         {
             "row":5,
             "col":2,
-            "color" : "white",
-            "directions" : [0, 0, 1, 1],
-            "data" : [null, null, "1", "0"]
+            "color" : "red",
+            "directions" : [0, 0, 1, 1]
         },
         {
             "row":6,
             "col":2,
             "color" : "white",
-            "directions" : [0, 0, 1, 0],
-            "data" : [null, null, "0", null]
+            "directions" : [0, 0, 1, 0]
         },
         {
             "row":7,
             "col":2,
-            "color" : "green",
-            "directions" : [0, 0, 0, 0],
-            "data" : [null, null, null, null]
+            "color" : "pink",
+            "directions" : [0, 0, 0, 0]
         },
         {
             "row":7,
             "col":4,
             "color" : "white",
-            "directions" : [1, 0, 0, 2],
-            "data" : ["0", null, null, "110"]
+            "directions" : [1, 0, 0, 1]
         },
         {
             "row":3,
             "col":4,
-            "color" : "white",
-            "directions" : [0, 2, 0, 1],
-            "data" : [null, "001", null, "0"]
+            "color" : "red",
+            "directions" : [0, 1, 0, 1]
         },
         {
             "row":1,
             "col":0,
             "color" : "white",
-            "directions" : [0, 0, 1, 0],
-            "data" : [null, null, "1", null]
+            "directions" : [0, 0, 1, 0]
+        },
+        {
+            "row":0,
+            "col":4,
+            "color" : "cyan",
+            "directions" : [0, 0, 0, 0]
         }
     ]
 }

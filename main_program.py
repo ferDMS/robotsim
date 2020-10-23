@@ -1,3 +1,5 @@
+from coord import Coord
+
 '''
 Control:
     robot.move_forward()
@@ -14,33 +16,53 @@ Sensors:
 '''
 
 def main():
-    robot.move_forward()
-    robot.move_forward()
+
+    ###################################
+    #Test 1: Robot eliminado por fuego
+    ###################################
+    # robot.move_forward()
+    # robot.rotate_right()
+    # robot.move_forward()
+    # robot.rotate_left()
+    # robot.move_forward()
+    # robot.move_forward()
+    # robot.move_forward()
+
+
+    ###################################
+    #Test 2: Robot atrapado en derrumbe
+    ###################################
+    # robot.move_forward()
+    # robot.move_forward()
+    # robot.move_forward()
+    # robot.rotate_right()
+    # robot.move_forward()
+    # robot.move_forward()
+    # robot.rotate_right()
+    # robot.move_forward()
+    # robot.rotate_right()
+    # robot.rotate_right()
+    # robot.move_forward()
+    # robot.rotate_right()
+    # robot.move_forward()
+
+    ############################################
+    #Test 3: Robot apaga fuego y salva personas
+    ############################################
     robot.move_forward()
     robot.rotate_right()
     robot.move_forward()
-    robot.insertCode("011")
-    robot.move_forward()
-    robot.move_forward()
     robot.rotate_left()
-    robot.move_forward()
-    robot.insertCode("110")
-    robot.move_forward()
+    robot.putOutFireFront()
     robot.rotate_right()
-    robot.move_forward()
-    robot.move_forward()
-    robot.rotate_left()
-    robot.move_forward()
-    robot.rotate_left()
-    robot.move_forward()
-    robot.move_forward()
-    robot.move_forward()
-    robot.rotate_right()
-    #get Huffman root node
-    root = robot.getHuffmanTree()
-    answer = ""
-    #add decode code here
-    print("Decoded answer: ", answer)
+    # robot.move_forward()
+    # robot.move_forward()
+    # robot.move_forward()
+    # robot.rotate_right()
+    # robot.move_forward()
+    # robot.move_forward()
+    # print("People saved?",robot.sendMessageRescueBase(Coord(4,3)))
+    
 
 if __name__ == "__main__":
     main()
