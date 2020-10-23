@@ -251,25 +251,15 @@ class Robot:
             #   1 -> West
             #   2 -> South
             #   3 -> East
-            row = self.row
-            col = self.col
-            if self.dir == 0:
-                if row > 0:
-                    map.tiles[row - 1][col].color == "white"
-                    map.tiles[row - 1][col].envType == "clear"
-            if self.dir == 1:
-                if col > 0:
-                    map.tiles[row][col - 1].color == "white"
-                    map.tiles[row][col - 1].envType == "clear"
-            if self.dir == 2:
-                if row < map.height-1:
-                    map.tiles[row + 1][col].color == "white"
-                    map.tiles[row + 1][col].envType == "clear"
-                return False
-            if self.dir == 3:
-                if col < map.width-1:
-                    map.tiles[row][col + 1].color == "white"
-                    map.tiles[row][col + 1].envType == "clear"
+            row_directions = [-1, 0, 1, 0]
+            col_directions = [0, -1, 0, 1]
+            row = self.row + row_directions[self.dir]
+            col = self.col + col_directions[self.dir]
+
+            if not map.is_valid_coordinate(row, col):
+                return
+            map.tiles[row][col].color = "white"
+            map.tiles[row][col].envType = "clear"
 
     def detectSimbolLeft(self):
         row = self.row
@@ -362,20 +352,26 @@ class Robot:
         return 'white'
 
     def sendMessageRescueBase(self, coordinate, path = None):
-        row = coordinate.x
-        col = coordinate.y
+        row = coordinate.y
+        col = coordinate.x
         if map.is_valid_coordinate(row, col) and map.tiles[row][col].envType == "people":
-            map.tiles[row][col].envType = "blank"
+            map.tiles[row][col].envType = "clear"
+            map.tiles[row][col].color = "white"
             self.points += 5
-            if path and self.__verifyPath(path):
-                self.points += 20
+            if path:
+                if self.__verifyPath(path):
+                    self.points += 20
+                    print("Valid path")
+                else:
+                    print("Invalid path")
+                    self.points -= 20
             return True
         self.points -= 10
         return False
 
     def sendMessageExplorationBase(self, coordinate):
-        row = coordinate.x
-        col = coordinate.y
+        row = coordinate.y
+        col = coordinate.x
         if map.is_valid_coordinate(row, col) and map.tiles[row][col].envType == "collapse":
             self.points += 5
             return True
@@ -404,13 +400,24 @@ class Robot:
         print("Position:", self.row, self.col,)
         print("Color: ", map.tiles[self.row][self.col].color)
         print("Color: ", map.tiles[self.row][self.col].envType)
-        print("North: ", map.tiles[self.row][self.col].North.status, map.tiles[self.row][self.col].North.status)
-        print("South: ", map.tiles[self.row][self.col].South.status, map.tiles[self.row][self.col].South.status)
-        print("East: ", map.tiles[self.row][self.col].East.status, map.tiles[self.row][self.col].East.status)
-        print("West: ", map.tiles[self.row][self.col].West.status, map.tiles[self.row][self.col].West.status)
+        print("North: ", map.tiles[self.row][self.col].North.status)
+        print("South: ", map.tiles[self.row][self.col].South.status)
+        print("East: ", map.tiles[self.row][self.col].East.status)
+        print("West: ", map.tiles[self.row][self.col].West.status)
         print("Front", self.ultrasonicFront())
         print("Left", self.ultrasonicLeft())
         print("Right", self.ultrasonicRight())
+        print("(~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)")
+
+    def debugSpecificTile(self, row, col):
+        print("(~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)")
+        print("Position:", row, col,)
+        print("Color: ", map.tiles[row][col].color)
+        print("Color: ", map.tiles[row][col].envType)
+        print("North: ", map.tiles[row][col].North.status)
+        print("South: ", map.tiles[row][col].South.status)
+        print("East: ", map.tiles[row][col].East.status)
+        print("West: ", map.tiles[row][col].West.status)
         print("(~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)")
 
     
