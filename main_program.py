@@ -68,6 +68,7 @@ def main():
     robot.rotate_right()
     robot.move_forward()
     robot.rotate_left()
+    print("Fire in the front:", robot.detectFireFront())
     robot.putOutFireFront()
     robot.rotate_right()
     robot.move_forward()
