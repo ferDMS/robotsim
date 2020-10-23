@@ -260,6 +260,7 @@ class Robot:
                 return
             map.tiles[row][col].color = "white"
             map.tiles[row][col].envType = "clear"
+            self.points += 10
 
     def detectSimbolLeft(self):
         row = self.row
