@@ -368,22 +368,23 @@ def generate_map():
                     #     else:
                     #         color = color[int(direction_data)]
                     pygame.draw.line(gameDisplay, colors[color], (x1_pixel, y1_pixel), (x2_pixel, y2_pixel),5)
+    
+    rosa_de_los_vientos = pygame.transform.scale(rosa_de_los_vientos, (int(pixel_constant*2), int(pixel_constant*2)))
+    gameDisplay.blit(rosa_de_los_vientos, (pixel_constant*8 + pixel_constant*0.2, pixel_constant))
+        
     if robot:
         myfont = pygame.font.SysFont('Arial', 12)
         textsurface = myfont.render('Movements = ' + str(robot.movements), False, (0, 0, 0))
         gameDisplay.blit(textsurface,(pixel_constant*8 + pixel_constant*0.2, pixel_constant*0.2))
         textsurface = myfont.render('Points = ' + str(robot.points), False, (0, 0, 0))
         gameDisplay.blit(textsurface,(pixel_constant*8 + pixel_constant*0.2, 0.4*pixel_constant))
-        rosa_de_los_vientos = pygame.transform.scale(rosa_de_los_vientos, (int(pixel_constant*2), int(pixel_constant*2)))
-        gameDisplay.blit(rosa_de_los_vientos, (pixel_constant*8 + pixel_constant*0.2, pixel_constant))
+        
     else:
         myfont = pygame.font.SysFont('Arial', 12)
         textsurface = myfont.render('Movements = 0', False, (0, 0, 0))
         gameDisplay.blit(textsurface,(pixel_constant*8 + pixel_constant*0.2, pixel_constant*0.2))
         textsurface = myfont.render('Points = 0', False, (0, 0, 0))
         gameDisplay.blit(textsurface,(pixel_constant*8 + pixel_constant*0.2, 0.4*pixel_constant))
-        rosa_de_los_vientos = pygame.transform.scale(rosa_de_los_vientos, (int(pixel_constant*2), int(pixel_constant*2)))
-        gameDisplay.blit(rosa_de_los_vientos, (pixel_constant*8 + pixel_constant*0.2, pixel_constant))
 
 
 def setup_map():
@@ -476,9 +477,7 @@ if __name__ == "__main__":
             reset = False
         else:
             run_button = pygame.transform.scale(run_button, (int(pixel_constant*0.5), int(pixel_constant*0.5)))
-            rosa_de_los_vientos = pygame.transform.scale(rosa_de_los_vientos, (int(pixel_constant), int(pixel_constant)))
             gameDisplay.blit(run_button, (0, 0))
-            gameDisplay.blit(rosa_de_los_vientos, (0, pixel_constant*8))
             pygame.display.update()
             clock.tick(120)
 
