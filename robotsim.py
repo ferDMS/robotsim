@@ -90,6 +90,9 @@ class Robot:
         #   3 -> East
         if self.movements >= 300:
             self.broken = True
+            myfont = pygame.font.SysFont('Arial', 18)
+            textsurface = myfont.render('Out of movements', False, (0, 0, 0))
+            gameDisplay.blit(textsurface,(pixel_constant*8 + pixel_constant*0.2, pixel_constant*4))
         if not self.broken:
             self.movements += 1
             if self.ultrasonicFront():
@@ -130,6 +133,9 @@ class Robot:
     def rotate_right(self):
         if self.movements >= 300:
             self.broken = True
+            myfont = pygame.font.SysFont('Arial', 18)
+            textsurface = myfont.render('Out of movements.', False, (0, 0, 0))
+            gameDisplay.blit(textsurface,(pixel_constant*8 + pixel_constant*0.2, pixel_constant*4))
         if not self.broken:
             self.movements += 1
             self.dir = (self.dir - 1 + 4) % 4
@@ -140,6 +146,9 @@ class Robot:
     def rotate_left(self):
         if self.movements >= 300:
             self.broken = True
+            myfont = pygame.font.SysFont('Arial', 18)
+            textsurface = myfont.render('Out of movements.', False, (0, 0, 0))
+            gameDisplay.blit(textsurface,(pixel_constant*8 + pixel_constant*0.2, pixel_constant*4))
         if not self.broken:
             self.movements += 1
             self.dir = (self.dir + 1) % 4
@@ -302,7 +311,9 @@ class Robot:
         if self.col + self.row == 0:
             print("El robot regresó a la base con éxito.")
             self.points+=20
-        generate_map()
+        myfont = pygame.font.SysFont('Arial', 18)
+        textsurface = myfont.render('Mission finished!', False, (0, 0, 0))
+        gameDisplay.blit(textsurface,(pixel_constant*8 + pixel_constant*0.2, pixel_constant*4))
 
     def __debugTile(self):
         print("(~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)")
