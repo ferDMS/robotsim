@@ -38,6 +38,7 @@ map = None
 pygame.init()
 robotImg = pygame.image.load('robot.png')
 run_button = pygame.image.load('run.png')
+rosa_de_los_vientos = pygame.image.load('direcciones.png')
 pygame.display.set_caption('Robot simulator')
 clock = pygame.time.Clock()
 
@@ -88,6 +89,8 @@ class Robot:
         #   1 -> West
         #   2 -> South
         #   3 -> East
+        if self.movements >= 300:
+            self.broken = True
         if not self.broken:
             self.movements += 1
             if self.ultrasonicFront():
@@ -130,6 +133,8 @@ class Robot:
         pass 
     
     def rotate_right(self):
+        if self.movements >= 300:
+            self.broken = True
         if not self.broken:
             self.movements += 1
             self.dir = (self.dir - 1 + 4) % 4
@@ -138,6 +143,8 @@ class Robot:
                 self.set_position(self.x,self.y,self.w - 3)
 
     def rotate_left(self):
+        if self.movements >= 300:
+            self.broken = True
         if not self.broken:
             self.movements += 1
             self.dir = (self.dir + 1) % 4
@@ -213,7 +220,7 @@ class Robot:
                 return -1 
         pygame.display.update()
         clock.tick(120)
-        return distance * 30
+        return distance
 
     def scanEnvironment(self):
         return map.tiles[self.row][self.col].envType
@@ -341,6 +348,14 @@ class Robot:
             return map.tiles[row][col].color
         return 'white'
 
+    def finishExploration(self):
+        self.broken = True
+        if self.col + self.row == 0:
+            print("El robot regresó a la base con éxito.")
+            self.points+=20
+        generate_map()
+        
+
     def sendMessageRescueBase(self, coordinate, path = None):
         row = coordinate.y
         col = coordinate.x
@@ -369,8 +384,8 @@ class Robot:
         self.points -= 10
         return False
 
-    def __verifyPath(self,path): # path : ['L', 'R', 'U', 'D'...]
-        direction_deltas = {'L': (-1,0), 'R': (1,0), 'U': (0,-1), 'D': (0,1)}
+    def __verifyPath(self,path): # path : ['N', 'S', 'E', 'W'...]
+        direction_deltas = {'W': (-1,0), 'E': (1,0), 'N': (0,-1), 'S': (0,1)}
         row = self.row
         col = self.col
         for direction in path:
@@ -414,6 +429,7 @@ class Robot:
     
 
 def generate_map():
+    global rosa_de_los_vientos
     gameDisplay.fill(white)
 
     for row in range(map.height):
@@ -452,15 +468,19 @@ def generate_map():
     if robot:
         myfont = pygame.font.SysFont('Arial', 12)
         textsurface = myfont.render('Movements = ' + str(robot.movements), False, (0, 0, 0))
-        gameDisplay.blit(textsurface,(display_width-pixel_constant*1.2,0))
+        gameDisplay.blit(textsurface,(pixel_constant*8 + pixel_constant*0.2, pixel_constant*0.2))
         textsurface = myfont.render('Points = ' + str(robot.points), False, (0, 0, 0))
-        gameDisplay.blit(textsurface,(display_width-pixel_constant*1.2,0.2*pixel_constant))
+        gameDisplay.blit(textsurface,(pixel_constant*8 + pixel_constant*0.2, 0.4*pixel_constant))
+        rosa_de_los_vientos = pygame.transform.scale(rosa_de_los_vientos, (int(pixel_constant*2), int(pixel_constant*2)))
+        gameDisplay.blit(rosa_de_los_vientos, (pixel_constant*8 + pixel_constant*0.2, pixel_constant))
     else:
         myfont = pygame.font.SysFont('Arial', 12)
         textsurface = myfont.render('Movements = 0', False, (0, 0, 0))
-        gameDisplay.blit(textsurface,(display_width-pixel_constant*1.2,0))
+        gameDisplay.blit(textsurface,(pixel_constant*8 + pixel_constant*0.2, pixel_constant*0.2))
         textsurface = myfont.render('Points = 0', False, (0, 0, 0))
-        gameDisplay.blit(textsurface,(display_width-pixel_constant*1.2,0.2*pixel_constant))
+        gameDisplay.blit(textsurface,(pixel_constant*8 + pixel_constant*0.2, 0.4*pixel_constant))
+        rosa_de_los_vientos = pygame.transform.scale(rosa_de_los_vientos, (int(pixel_constant*2), int(pixel_constant*2)))
+        gameDisplay.blit(rosa_de_los_vientos, (pixel_constant*8 + pixel_constant*0.2, pixel_constant))
 
 
 def setup_map():
@@ -474,7 +494,7 @@ def setup_map():
     display_width = map_info['size']['w'] * pixel_constant
     display_height = map_info['size']['h'] * pixel_constant
 
-    gameDisplay = pygame.display.set_mode((display_width,display_height))
+    gameDisplay = pygame.display.set_mode((display_width + int(pixel_constant*2.5), display_height))
 
     #Map initialization
     map = Map(map_info['size']['w'],map_info['size']['h'])
@@ -553,7 +573,9 @@ if __name__ == "__main__":
             reset = False
         else:
             run_button = pygame.transform.scale(run_button, (int(pixel_constant*0.5), int(pixel_constant*0.5)))
+            rosa_de_los_vientos = pygame.transform.scale(rosa_de_los_vientos, (int(pixel_constant), int(pixel_constant)))
             gameDisplay.blit(run_button, (0, 0))
+            gameDisplay.blit(rosa_de_los_vientos, (0, pixel_constant*8))
             pygame.display.update()
             clock.tick(120)
 
