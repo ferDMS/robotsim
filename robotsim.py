@@ -1,9 +1,8 @@
 import pygame
 import json
 import math
-from HuffmanTree import huffman_tree 
-from coord import Coord 
-from map import Map
+from modules.coord import Coord
+from modules.map import Map
 
 pixel_constant = 50
 display_width = 0
@@ -36,8 +35,9 @@ robot = None
 map = None
 
 pygame.init()
-robotImg = pygame.image.load('robot.png')
-run_button = pygame.image.load('run.png')
+robotImg = pygame.image.load('images/robot.png')
+run_button = pygame.image.load('images/run.png')
+rosa_de_los_vientos = pygame.image.load('images/direcciones.png')
 pygame.display.set_caption('Robot simulator')
 clock = pygame.time.Clock()
 
@@ -45,7 +45,7 @@ crashed = False
 reset = False
 start = True
 
-with open('map.json') as json_file:
+with open('resources/map.json') as json_file:
     map_info = json.load(json_file)
 
 
@@ -88,6 +88,11 @@ class Robot:
         #   1 -> West
         #   2 -> South
         #   3 -> East
+        if self.movements >= 300:
+            self.broken = True
+            myfont = pygame.font.SysFont('Arial', 18)
+            textsurface = myfont.render('Out of movements', False, (0, 0, 0))
+            gameDisplay.blit(textsurface,(pixel_constant*8 + pixel_constant*0.2, pixel_constant*4))
         if not self.broken:
             self.movements += 1
             if self.ultrasonicFront():
@@ -124,12 +129,13 @@ class Robot:
                         textsurface = myfont.render("Robot stuck in collapsed zone!", False, (0, 0, 0))
                         gameDisplay.blit(textsurface,(display_width/2-pixel_constant*1.2,0))
                     map.tiles[self.row][self.col].envData = 1
-
-    def move_backward(self):
-        #TODO
-        pass 
     
     def rotate_right(self):
+        if self.movements >= 300:
+            self.broken = True
+            myfont = pygame.font.SysFont('Arial', 18)
+            textsurface = myfont.render('Out of movements.', False, (0, 0, 0))
+            gameDisplay.blit(textsurface,(pixel_constant*8 + pixel_constant*0.2, pixel_constant*4))
         if not self.broken:
             self.movements += 1
             self.dir = (self.dir - 1 + 4) % 4
@@ -138,6 +144,11 @@ class Robot:
                 self.set_position(self.x,self.y,self.w - 3)
 
     def rotate_left(self):
+        if self.movements >= 300:
+            self.broken = True
+            myfont = pygame.font.SysFont('Arial', 18)
+            textsurface = myfont.render('Out of movements.', False, (0, 0, 0))
+            gameDisplay.blit(textsurface,(pixel_constant*8 + pixel_constant*0.2, pixel_constant*4))
         if not self.broken:
             self.movements += 1
             self.dir = (self.dir + 1) % 4
@@ -146,15 +157,15 @@ class Robot:
                 self.set_position(self.x,self.y,self.w + 3)
 
     def ultrasonicFront(self):
-        return self.getDistance(0)
+        return self.__getDistance(0)
 
     def ultrasonicRight(self):
-        return self.getDistance(1)
+        return self.__getDistance(1)
 
     def ultrasonicLeft(self):
-        return self.getDistance(2)
+        return self.__getDistance(2)
 
-    def getDistance(self, dir_ultrasonic):
+    def __getDistance(self, dir_ultrasonic):
         # dir:
         #   Front: 0
         #   Right: 1
@@ -213,7 +224,7 @@ class Robot:
                 return -1 
         pygame.display.update()
         clock.tick(120)
-        return distance * 30
+        return distance
 
     def scanEnvironment(self):
         return map.tiles[self.row][self.col].envType
@@ -243,104 +254,13 @@ class Robot:
             col_directions = [0, -1, 0, 1]
             row = self.row + row_directions[self.dir]
             col = self.col + col_directions[self.dir]
-
             if not map.is_valid_coordinate(row, col):
                 return
             map.tiles[row][col].color = "white"
             map.tiles[row][col].envType = "clear"
             generate_map()
             self.points += 10
-
-    def detectSimbolLeft(self):
-        row = self.row
-        col = self.col
-        if self.dir == 0:
-            if map.tiles[row][col].West.status == 1:
-                return map.tiles[row][col].West.data
-        if self.dir == 1:
-            if map.tiles[row][col].South.status == 1:
-                return map.tiles[row][col].South.data
-        if self.dir == 2:
-            if map.tiles[row][col].East.status == 1:
-                return map.tiles[row][col].East.data
-        if self.dir == 3:
-            if map.tiles[row][col].North.status == 1:
-                return map.tiles[row][col].North.data
-        return None
-
-    def detectSimbolRight(self):
-        row = self.row
-        col = self.col
-        if self.dir == 0:
-            if map.tiles[row][col].East.status == 1:
-                return map.tiles[row][col].East.data
-        if self.dir == 1:
-            if map.tiles[row][col].North.status == 1:
-                return map.tiles[row][col].North.data
-        if self.dir == 2:
-            if map.tiles[row][col].West.status == 1:
-                return map.tiles[row][col].West.data
-        if self.dir == 3:
-            if map.tiles[row][col].South.status == 1:
-                return map.tiles[row][col].South.data
-        return None
-
-    def detectDoorFront(self):
-        row = self.row
-        col = self.col
-        if self.dir == 0 and map.tiles[row][col].North.status == 2:
-            return True
-        if self.dir == 1 and map.tiles[row][col].West.status == 2:
-            return True
-        if self.dir == 2 and map.tiles[row][col].South.status == 2:
-            return True
-        if self.dir == 3 and map.tiles[row][col].East.status == 2:
-            return True
-        return False
-
-    def insertCode(self, passw):
-        row = self.row
-        col = self.col
-        if self.dir == 0 and map.tiles[row][col].North.status == 2:
-            if map.tiles[row][col].North.data == passw:
-                map.tiles[row][col].North.status = 0
-                if(row != 0 and map.tiles[row - 1][col].South.data == None):
-                    map.tiles[row - 1][col].South.status = 0
-                generate_map()
-                return True
-        if self.dir == 1 and map.tiles[row][col].West.status == 2:
-            if map.tiles[row][col].West.data == passw:
-                map.tiles[row][col].West.status = 0
-                if(col != 0 and map.tiles[row][col - 1].East.data == None):
-                    map.tiles[row][col - 1].East.status = 0
-                generate_map()
-                return True
-        if self.dir == 2 and map.tiles[row][col].South.status == 2:
-            if map.tiles[row][col].South.data == passw:
-                map.tiles[row][col].South.status = 0
-                if(row != map.height and map.tiles[row + 1][col].North.data == None):
-                    map.tiles[row + 1][col].North.status = 0
-                generate_map()
-                return True
-        if self.dir == 3 and map.tiles[row][col].East.status == 2:
-            if map.tiles[row][col].East.data == passw:
-                map.tiles[row][col].East.status = 0
-                if(row != map.width and map.tiles[row][col + 1].West.data == None):
-                    map.tiles[row][col + 1].West.status = 0
-                generate_map()
-                return True
-        return False
-
-    def getHuffmanTree(self):
-        return huffman_tree.get_huffman_root()
-
-    def getColor(self):
-        row = self.row
-        col = self.col
-        if map.tiles[row][col].color:
-            return map.tiles[row][col].color
-        return 'white'
-
+        
     def sendMessageRescueBase(self, coordinate, path = None):
         row = coordinate.y
         col = coordinate.x
@@ -369,8 +289,8 @@ class Robot:
         self.points -= 10
         return False
 
-    def __verifyPath(self,path): # path : ['L', 'R', 'U', 'D'...]
-        direction_deltas = {'L': (-1,0), 'R': (1,0), 'U': (0,-1), 'D': (0,1)}
+    def __verifyPath(self,path): # path : ['N', 'S', 'E', 'W'...]
+        direction_deltas = {'W': (-1,0), 'E': (1,0), 'N': (0,-1), 'S': (0,1)}
         row = self.row
         col = self.col
         for direction in path:
@@ -386,7 +306,16 @@ class Robot:
             return True
         return False
 
-    def debugTile(self):
+    def finishExploration(self):
+        self.broken = True
+        if self.col + self.row == 0:
+            print("El robot regresó a la base con éxito.")
+            self.points+=20
+        myfont = pygame.font.SysFont('Arial', 18)
+        textsurface = myfont.render('Mission finished!', False, (0, 0, 0))
+        gameDisplay.blit(textsurface,(pixel_constant*8 + pixel_constant*0.2, pixel_constant*4))
+
+    def __debugTile(self):
         print("(~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)")
         print("Position:", self.row, self.col,)
         print("Color: ", map.tiles[self.row][self.col].color)
@@ -400,7 +329,7 @@ class Robot:
         print("Right", self.ultrasonicRight())
         print("(~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)")
 
-    def debugSpecificTile(self, row, col):
+    def __debugSpecificTile(self, row, col):
         print("(~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)")
         print("Position:", row, col,)
         print("Color: ", map.tiles[row][col].color)
@@ -414,6 +343,7 @@ class Robot:
     
 
 def generate_map():
+    global rosa_de_los_vientos
     gameDisplay.fill(white)
 
     for row in range(map.height):
@@ -449,18 +379,23 @@ def generate_map():
                     #     else:
                     #         color = color[int(direction_data)]
                     pygame.draw.line(gameDisplay, colors[color], (x1_pixel, y1_pixel), (x2_pixel, y2_pixel),5)
+    
+    rosa_de_los_vientos = pygame.transform.scale(rosa_de_los_vientos, (int(pixel_constant*2), int(pixel_constant*2)))
+    gameDisplay.blit(rosa_de_los_vientos, (pixel_constant*8 + pixel_constant*0.2, pixel_constant))
+        
     if robot:
         myfont = pygame.font.SysFont('Arial', 12)
         textsurface = myfont.render('Movements = ' + str(robot.movements), False, (0, 0, 0))
-        gameDisplay.blit(textsurface,(display_width-pixel_constant*1.2,0))
+        gameDisplay.blit(textsurface,(pixel_constant*8 + pixel_constant*0.2, pixel_constant*0.2))
         textsurface = myfont.render('Points = ' + str(robot.points), False, (0, 0, 0))
-        gameDisplay.blit(textsurface,(display_width-pixel_constant*1.2,0.2*pixel_constant))
+        gameDisplay.blit(textsurface,(pixel_constant*8 + pixel_constant*0.2, 0.4*pixel_constant))
+        
     else:
         myfont = pygame.font.SysFont('Arial', 12)
         textsurface = myfont.render('Movements = 0', False, (0, 0, 0))
-        gameDisplay.blit(textsurface,(display_width-pixel_constant*1.2,0))
+        gameDisplay.blit(textsurface,(pixel_constant*8 + pixel_constant*0.2, pixel_constant*0.2))
         textsurface = myfont.render('Points = 0', False, (0, 0, 0))
-        gameDisplay.blit(textsurface,(display_width-pixel_constant*1.2,0.2*pixel_constant))
+        gameDisplay.blit(textsurface,(pixel_constant*8 + pixel_constant*0.2, 0.4*pixel_constant))
 
 
 def setup_map():
@@ -474,7 +409,7 @@ def setup_map():
     display_width = map_info['size']['w'] * pixel_constant
     display_height = map_info['size']['h'] * pixel_constant
 
-    gameDisplay = pygame.display.set_mode((display_width,display_height))
+    gameDisplay = pygame.display.set_mode((display_width + int(pixel_constant*2.5), display_height))
 
     #Map initialization
     map = Map(map_info['size']['w'],map_info['size']['h'])
@@ -508,7 +443,7 @@ def setup_robot():
 
     robot_size = int(pixel_constant * 0.5)
     robotImg = pygame.transform.scale(robotImg, (robot_size, robot_size))
-    gameIcon = pygame.image.load('roborregos_logo.PNG')
+    gameIcon = pygame.image.load('images/roborregos_logo.PNG')
     pygame.display.set_icon(gameIcon)
     
     col = map_info['robot_start']['col']
