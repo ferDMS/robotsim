@@ -307,13 +307,15 @@ class Robot:
         return False
 
     def finishExploration(self):
-        self.broken = True
-        if self.col + self.row == 0:
-            print("El robot regresó a la base con éxito.")
-            self.points+=20
-        myfont = pygame.font.SysFont('Arial', 18)
-        textsurface = myfont.render('Mission finished!', False, (0, 0, 0))
-        gameDisplay.blit(textsurface,(pixel_constant*8 + pixel_constant*0.2, pixel_constant*4))
+        if not self.broken:
+            self.broken = True
+            if self.col + self.row == 0:
+                print("El robot regresó a la base con éxito.")
+                self.points+=20
+            generate_map()
+            myfont = pygame.font.SysFont('Arial', 18)
+            textsurface = myfont.render('Mission finished!', False, (0, 0, 0))
+            gameDisplay.blit(textsurface,(pixel_constant*8 + pixel_constant*0.2, pixel_constant*4))
 
     def __debugTile(self):
         print("(~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)")
