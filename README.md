@@ -18,7 +18,7 @@ _ **robotSim** _ es un proyecto en desarrollo, así que le pedimos a los partici
 
 ### Acerca de este proyecto
 
-El simulador fue adaptado específicamente para los retos de Candidates 2020. En esta versión, se tiene un entorno específico para el [Hack de Programación de Robótica 2020](https://drive.google.com/file/d/1Nu97Dv9UkiNyiNj_5eJC0MZKXQhEu2Bb/view?usp=sharing).
+El simulador fue adaptado específicamente para los retos de Candidates 2020. En esta versión, se tiene un entorno específico para el [Hack de Programación de Robótica 2020](https://drive.google.com/file/d/1B0jB0Iq4SKzmIq1SzM4XoDQHxFvHWOdm/view?usp=sharing).
 
 
 ### Uso del simulador
