@@ -1,13 +1,12 @@
-Última actualización: 9/10/2020
+Última actualización: 18/04/2021
 
 #
-
-![](resources/logo.png)
+<img src="resources/logo.png" width="400" ><img> 
 
 ##
 # **robotSim**
 
-_ **robotSim** _ es un proyecto en desarrollo, así que le pedimos a los participantes de Candidates 2020 que estén atentos a cualquier aviso de actualización del programa. Igualmente, si hay cualquier duda no duden en contactarse con los programadores RoBorregos:
+_ **robotSim** _ es un proyecto en desarrollo, así que le pedimos a los participantes del AT 2021 que estén atentos a cualquier aviso de actualización del programa. Igualmente, si hay cualquier duda no duden en contactarse con los programadores RoBorregos:
 
 | Nombre | Correo | Github |
 | ---- | ----- | ------ |
@@ -16,11 +15,11 @@ _ **robotSim** _ es un proyecto en desarrollo, así que le pedimos a los partici
 | Aurora Tijerina | [A01196690@itesm.mx](mailto:A01196690@itesm.mx) | [@AuroTB](https://github.com/AuroTB) |
 
 
-### Acerca de este proyecto
+## Acerca de este proyecto
 
-El simulador fue adaptado específicamente para los retos de Candidates 2020. En esta versión, se tiene un entorno específico para el Mini Reto del [Mapa de Tesoro](https://drive.google.com/file/d/1Nu97Dv9UkiNyiNj_5eJC0MZKXQhEu2Bb/view?usp=sharing).
+El simulador fue adaptado específicamente para los retos del AT 2021. En esta versión, se tiene un entorno específico para el reto [Mace Race 2021](hola).
 
-### Uso del simulador
+## Uso del simulador [TODO: agregar link de replit para que lo corran en web]
 
 1. Clonar el repositorio del proyecto.
 
@@ -54,61 +53,47 @@ El simulador fue adaptado específicamente para los retos de Candidates 2020. En
 	$ python robotsim.py
 	```
     
-### Información Archivos 
+## Información para developer 
 El repositorio tiene los siguientes archivos en un folder:
 
-- **main\_program.py:** script donde se programan los movimientos del robot
-- **map.json:** descripción del mapa, sirve como entrada para que el programa genere la imagen
-- **map.py y robotsim.py:** building class para el objeto mapa y script de inicialización y actualización del entorno.
-- **imágenes del programa:** imágen del robot y del botón de play (run.png y robot.png).
+- **main\_program.py:** script donde se programan los movimientos del robot.
+- **robotsim.py:** script de inicialización y actualización del entorno de simulación.
+- **resources/map.json:** descripción del mapa (test case).
 
-Para correr el programa, símplemente se debe de correr el comando:
+Para correr el simulador, símplemente se debe de correr el comando:
 ```bash
 	$ python robotsim.py
 ```
 
-### Mapa
+## Mapa [TODO: Update image]
 
 ![](resources/map.png)
 
 El mapa cuenta con las siguientes características:
 
-- Negro: Pared sin símbolo.
-- Rojo: Pared con símbolo 0.
-- Azul: Pared con símbolo 1.
-- Magenta: Puerta.
-- Verde y Amarillo: Baldosas
+- Paredes de color negro
+- Baldosas de colores:
+  - Rojo y verde: baldosas especiales (+25 puntos).
+  - Azul: baldosas de puntos extra (+10 puntos).
+  - Morado: Baldosa de salida.
+- Objetos: color negro.
 
 
-### Funciones del robot
+## Funciones del robot
 
-| **Función** | **Descripción** | **Input/Output** |
-| --- | --- | --- |
-| robot.move\_forward() | Mueve el robot a la baldosa de enfrente | - |
-| robot.rotate\_right() | Gira el robot 90° a la derecha | - |
-| robot.rotate\_left() | Gira el robot 90° a la izquierda | - |
-| robot.insertCode(password) | Inserta un código en la puerta que tenga frente a éste. | Input: string (3 símbolos  Output: bool |
-| robot.ultrasonicFront() | Obtiene la distancia frente al robot en centímetros; si no detecta nada regresa -1 | Output: int |
-| robot.getColor() | Obtiene el color de la baldosa en la que el robot se encuentra | Output: string ('green','yellow','white) |
-| robot.detectSimbolLeft() | Detecta el símbolo a la izquierda | Output: '0'/'1'/None |
-| robot.detectSimbolRight() | Detecta el símbolo a la derecha | Output: '0'/'1'/None |
-| robot.detectDoorFront() | Detecta si frente al robot hay una puerta | Output: bool |
-| robot.getHuffmanTree() | Te regresa el nodo raíz (root) del árbol de Huffman | Output: Nodo |
+| **Función** | **Descripción** | **Input** | **Output** |
+| --- | --- | --- | --- |
+| robot.move\_forward() | Mueve el robot a la baldosa de enfrente | - | - |
+| robot.rotate\_right() | Gira el robot 90° a la derecha | - | - |
+| robot.rotate\_left() | Gira el robot 90° a la izquierda | - | - |
+| robot.display_color(color) | Hace que el robot señale un color específico. | string ('blue', 'red', 'green') | bool (color identificado correctamente) |
+| robot.grab\_obj() | Agarra el objeto frente a éste (si hay alguno)) | - | bool (objeto agarrado) |
+| robot.finish\_round() | Termina la ronda. | - | - |
+| robot.ultrasonicFront() | Obtiene la distancia frente al robot en centímetros; si no detecta nada regresa -1 | int (número de cuadros libres frente al robot)|
+| robot.getColor() | Obtiene el color de la baldosa en la que el robot se encuentra | - | string ('green','red','white', 'blue', 'purple') |
+| robot.scan\_front() | Detecta si hay un objeto frente al robot. | - | bool (se detectó un objeto o no) |
 
-### Árbol de Huffman
-El método getHuffmanTree() del robot regresa el nodo raíz del árbol de Huffman.
-El nodo tiene la siguiente clase:
-```bash
-class Node:  
-    def __init__(self, freq,data):  
-        self.freq = freq  
-        self.data = data  
-        self.left = None  
-        self.right = None  
-``` 
-Para más información consultar: https://www.hackerrank.com/challenges/tree-huffman-decoding/problem 
-
-### Importante
+## Importante
 
 Cuando se escriba código en main\_program.py se tienen que tomar en cuenta los siguientes detalles:
 
