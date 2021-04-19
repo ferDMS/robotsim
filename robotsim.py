@@ -187,6 +187,47 @@ class Robot:
             print(f'Color successfully identified: {color}')
         return
 
+    def scan_front(self) -> bool:
+        self.logic_calls += 1
+        row = self.row
+        col = self.col
+        if self.dir == 0 and row-1 > -1:
+            return map.tiles[row-1][col].object
+            
+        if self.dir == 1 and col-1 > -1:
+            return map.tiles[row][col-1].object
+
+        if self.dir == 2 and row+1 < map.height:
+            return map.tiles[row+1][col].object
+
+        if self.dir == 3 and col+1 < map.width:
+            return map.tiles[row][col+1].object
+        
+        return False
+
+    def grab_obj(self):
+        self.movements += 1
+        row = self.row
+        col = self.col
+        if self.dir == 0 and row-1 > -1 and map.tiles[row-1][col].object:
+            map.tiles[row-1][col].object = False
+            self.points += 10
+            
+        if self.dir == 1 and col-1 > -1 and map.tiles[row][col-1].object:
+            map.tiles[row][col-1].object = False
+            self.points += 10
+
+        if self.dir == 2 and row+1 < map.height and map.tiles[row+1][col].object:
+            map.tiles[row+1][col].object = False
+            self.points += 10
+
+        if self.dir == 3 and col+1 < map.width and map.tiles[row][col+1].object:
+            map.tiles[row][col+1].object = False
+            self.points += 10
+        
+        generate_map()
+        return
+
     def debugTile(self):
         print("(~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)")
         print("Color: ", map.tiles[self.row][self.col].color)
@@ -207,6 +248,12 @@ def generate_map():
                 y = row * pixel_constant
                 c = colors[map.tiles[row][col].color]
                 pygame.draw.rect(gameDisplay,c,(x,y,pixel_constant,pixel_constant))
+
+            if map.tiles[row][col].object:
+                x = col * pixel_constant + pixel_constant//2
+                y = row * pixel_constant + pixel_constant//2
+                c = colors[map.tiles[row][col].color]
+                pygame.draw.circle(gameDisplay,colors['black'],(x,y),pixel_constant//4, 1)  
 
             #Tile walls in North, South, East and West order
             x1 = [0, 0, 1, 0]
@@ -274,6 +321,10 @@ def setup_map():
     dir_reflection_xy = [(-1,0),(1,0),(0,1),(0,-1)]
     for tile in map_info['tiles']:
         map.tiles[tile['row']][tile['col']].color = tile['color']
+        try:
+            map.tiles[tile['row']][tile['col']].object = tile['object']
+        except KeyError:
+            pass
         for dir_index in range(len(dir)):
             if getattr(getattr(map.tiles[tile['row']][tile['col']], dir[dir_index]), "status") == 0:
                 setattr(getattr(map.tiles[tile['row']][tile['col']], dir[dir_index]), "status", tile['directions'][dir_index])

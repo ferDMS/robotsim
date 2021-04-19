@@ -16,6 +16,7 @@ class Tile:
         self.East = Direction()
         self.West = Direction()
         self.color_identified = False
+        self.object = False
 
 class Map:
     def __init__(self, width, height):

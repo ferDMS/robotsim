@@ -21,6 +21,7 @@
             "row":5,
             "col":0,
             "color" : "red",
+            "object": true,
             "directions" : [0, 0, 1, 1],
             "data" : [null, null, "1", "0"]
         },
