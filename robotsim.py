@@ -1,8 +1,7 @@
 import pygame
 import json
 import math
-from HuffmanTree import huffman_tree 
-from map import Map
+from modules.map import Map
 
 pixel_constant = 50
 display_width = 0
@@ -35,8 +34,8 @@ robot = None
 map = None
 
 pygame.init()
-robotImg = pygame.image.load('robot.png')
-run_button = pygame.image.load('run.png')
+robotImg = pygame.image.load('resources/robot.png')
+run_button = pygame.image.load('resources/run.png')
 pygame.display.set_caption('Robot simulator')
 clock = pygame.time.Clock()
 
@@ -44,7 +43,7 @@ crashed = False
 reset = False
 start = True
 
-with open('map.json') as json_file:
+with open('resources/map.json') as json_file:
     map_info = json.load(json_file)
 
 
@@ -97,10 +96,6 @@ class Robot:
                 y2 = y1 - round(math.sin(rad))
                 generate_map()
                 self.set_position(x2,y2,angle)
-
-    def move_backward(self):
-        #TODO
-        pass 
     
     def rotate_right(self):
         self.dir = (self.dir - 1 + 4) % 4
@@ -159,99 +154,13 @@ class Robot:
         pygame.display.update()
         clock.tick(120)
         return distance * 30
-
-    def detectSimbolLeft(self):
-        row = self.row
-        col = self.col
-        if self.dir == 0:
-            if map.tiles[row][col].West.status == 1:
-                return map.tiles[row][col].West.data
-        if self.dir == 1:
-            if map.tiles[row][col].South.status == 1:
-                return map.tiles[row][col].South.data
-        if self.dir == 2:
-            if map.tiles[row][col].East.status == 1:
-                return map.tiles[row][col].East.data
-        if self.dir == 3:
-            if map.tiles[row][col].North.status == 1:
-                return map.tiles[row][col].North.data
-        return None
-
-    def detectSimbolRight(self):
-        row = self.row
-        col = self.col
-        if self.dir == 0:
-            if map.tiles[row][col].East.status == 1:
-                return map.tiles[row][col].East.data
-        if self.dir == 1:
-            if map.tiles[row][col].North.status == 1:
-                return map.tiles[row][col].North.data
-        if self.dir == 2:
-            if map.tiles[row][col].West.status == 1:
-                return map.tiles[row][col].West.data
-        if self.dir == 3:
-            if map.tiles[row][col].South.status == 1:
-                return map.tiles[row][col].South.data
-        return None
-
-    def detectDoorFront(self):
-        row = self.row
-        col = self.col
-        if self.dir == 0 and map.tiles[row][col].North.status == 2:
-            return True
-        if self.dir == 1 and map.tiles[row][col].West.status == 2:
-            return True
-        if self.dir == 2 and map.tiles[row][col].South.status == 2:
-            return True
-        if self.dir == 3 and map.tiles[row][col].East.status == 2:
-            return True
-        return False
-
-    def insertCode(self, passw):
-        row = self.row
-        col = self.col
-        if self.dir == 0 and map.tiles[row][col].North.status == 2:
-            if map.tiles[row][col].North.data == passw:
-                map.tiles[row][col].North.status = 0
-                if(row != 0 and map.tiles[row - 1][col].South.data == None):
-                    map.tiles[row - 1][col].South.status = 0
-                generate_map()
-                return True
-        if self.dir == 1 and map.tiles[row][col].West.status == 2:
-            if map.tiles[row][col].West.data == passw:
-                map.tiles[row][col].West.status = 0
-                if(col != 0 and map.tiles[row][col - 1].East.data == None):
-                    map.tiles[row][col - 1].East.status = 0
-                generate_map()
-                return True
-        if self.dir == 2 and map.tiles[row][col].South.status == 2:
-            if map.tiles[row][col].South.data == passw:
-                map.tiles[row][col].South.status = 0
-                if(row != map.height and map.tiles[row + 1][col].North.data == None):
-                    map.tiles[row + 1][col].North.status = 0
-                generate_map()
-                return True
-        if self.dir == 3 and map.tiles[row][col].East.status == 2:
-            if map.tiles[row][col].East.data == passw:
-                map.tiles[row][col].East.status = 0
-                if(row != map.width and map.tiles[row][col + 1].West.data == None):
-                    map.tiles[row][col + 1].West.status = 0
-                generate_map()
-                return True
-        return False
-
-    def getHuffmanTree(self):
-        return huffman_tree.get_huffman_root()
-
-        
-
+    
     def getColor(self):
         row = self.row
         col = self.col
         if map.tiles[row][col].color:
             return map.tiles[row][col].color
         return 'white'
-
 
     def debugTile(self):
         print("(~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)")
@@ -262,8 +171,6 @@ class Robot:
         print("West: ", map.tiles[self.row][self.col].West.status, map.tiles[self.row][self.col].West.data)
         print("(~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)")
         
-
-
 def generate_map():
     gameDisplay.fill(white)
 
@@ -301,7 +208,6 @@ def generate_map():
                         else:
                             color = color[int(direction_data)]
                     pygame.draw.line(gameDisplay, colors[color], (x1_pixel, y1_pixel), (x2_pixel, y2_pixel),5)
-
 
 def setup_map():
     global display_width 
@@ -348,7 +254,7 @@ def setup_robot():
 
     robot_size = int(pixel_constant * 0.5)
     robotImg = pygame.transform.scale(robotImg, (robot_size, robot_size))
-    gameIcon = pygame.image.load('roborregos_logo.PNG')
+    gameIcon = pygame.image.load('resources/roborregos_logo.PNG')
     pygame.display.set_icon(gameIcon)
     
     col = map_info['robot_start']['col']

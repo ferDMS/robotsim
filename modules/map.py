@@ -3,7 +3,6 @@ from enum import IntEnum
 class DirectionStatus(IntEnum):
     Free = 0
     Wall = 1
-    Door = 2
 
 class Direction:
     def __init__(self):
