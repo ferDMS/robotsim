@@ -172,6 +172,20 @@ class Robot:
         if map.tiles[row][col].color:
             return map.tiles[row][col].color
         return 'white'
+    
+    def display_color(self, color: str):
+        self.logic_calls += 1
+        row = self.row
+        col = self.col
+        tileColor = map.tiles[row][col].color
+        if not map.tiles[row][col].color_identified and color == tileColor:
+            map.tiles[row][col].color_identified = True
+            if color == 'blue':
+                self.points += 10
+            elif color in ['red', 'green']:
+                self.points += 25
+            print(f'Color successfully identified: {color}')
+        return
 
     def debugTile(self):
         print("(~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)")

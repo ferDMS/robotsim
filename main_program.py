@@ -15,8 +15,16 @@ Sensors:
 
 def main():
     robot.move_forward()
+    robot.display_color('blue')
     robot.move_forward()
+    robot.display_color('red')
     robot.move_forward()
+    robot.display_color('green')
+    robot.display_color('green')
+    robot.display_color('green')
+    robot.display_color('blue')
+    robot.display_color('blue')
+    robot.display_color('red')
     robot.getColor()
     robot.ultrasonic_front()
     robot.rotate_right()
