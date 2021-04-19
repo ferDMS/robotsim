@@ -278,11 +278,17 @@ def setup_map():
             if getattr(getattr(map.tiles[tile['row']][tile['col']], dir[dir_index]), "status") == 0:
                 setattr(getattr(map.tiles[tile['row']][tile['col']], dir[dir_index]), "status", tile['directions'][dir_index])
                 setattr(getattr(map.tiles[tile['row']][tile['col']], dir[dir_index]), "data", tile['data'][dir_index])
-            if tile['directions'][dir_index] in [1,2]:
+            if tile['directions'][dir_index]:
                 new_row = tile['row'] + dir_reflection_xy[dir_index][0]
                 new_col = tile['col'] + dir_reflection_xy[dir_index][1]
                 if is_valid_coordinate(new_row, new_col):
                     setattr(getattr(map.tiles[new_row][new_col], dir_reflection[dir_index]), "status", 1)
+    for i in range(map_info['size']['w']):
+        map.tiles[0][i].North.status = 1
+        map.tiles[map_info['size']['h']-1][i].South.status = 1
+    for i in range(map_info['size']['h']):
+        map.tiles[i][0].West.status = 1
+        map.tiles[i][map_info['size']['w']-1].East.status = 1
     generate_map()
 
 
