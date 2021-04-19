@@ -6,9 +6,7 @@ class DirectionStatus(IntEnum):
 
 class Direction:
     def __init__(self):
-        self.status = DirectionStatus.Free 
-        self.data = None
-        
+        self.status = DirectionStatus.Free
 
 class Tile:
     def __init__(self):

@@ -188,7 +188,7 @@ def generate_map():
             y1 = [0, 1, 0, 0]
             x2 = [1, 1, 1, 0]
             y2 = [0, 1, 1, 1]
-            wall_colors = [None, ['red','blue','black'], 'magenta']
+            wall_colors = [None, ['red','blue','black']]
             dir = ["North","South","East","West"]
             #Wall shifting towards the center
             shift_x = [0, 0, -1, 1]
@@ -202,11 +202,7 @@ def generate_map():
                     y2_pixel = (row + y2[wall_order]) * pixel_constant + shift_y[wall_order] * pixel_constant * 0.02
                     color = wall_colors[direction_status]
                     if isinstance(color, list):
-                        direction_data = getattr(getattr(map.tiles[row][col], dir[wall_order]),"data")
-                        if direction_data is None:
-                            color = color[-1]
-                        else:
-                            color = color[int(direction_data)]
+                        color = color[-1]
                     pygame.draw.line(gameDisplay, colors[color], (x1_pixel, y1_pixel), (x2_pixel, y2_pixel),5)
 
 def setup_map():
