@@ -89,7 +89,7 @@ El mapa cuenta con las siguientes características:
 | robot.display_color(color) | Hace que el robot señale un color específico. | string ('blue', 'red', 'green') | bool (color identificado correctamente) |
 | robot.grab\_obj() | Agarra el objeto frente a éste (si hay alguno)) | - | bool (objeto agarrado) |
 | robot.finish\_round() | Termina la ronda. | - | - |
-| robot.ultrasonicFront() | Obtiene la distancia frente al robot en centímetros; si no detecta nada regresa -1 | int (número de cuadros libres frente al robot)|
+| robot.ultrasonic\_front() | Obtiene la distancia frente al robot en centímetros; si no detecta nada regresa -1 | int (número de cuadros libres frente al robot)|
 | robot.getColor() | Obtiene el color de la baldosa en la que el robot se encuentra | - | string ('green','red','white', 'blue', 'purple') |
 | robot.scan\_front() | Detecta si hay un objeto frente al robot. | - | bool (se detectó un objeto o no) |
 

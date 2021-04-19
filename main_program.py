@@ -8,7 +8,7 @@ Control:
     robot.grab_obj()
 
 Sensors:
-    robot.ultrasonicFront() -> int
+    robot.ultrasonic_front() -> int
     robot.getColor() -> string
     robot.scan_front() -> bool
 '''
@@ -17,6 +17,8 @@ def main():
     robot.move_forward()
     robot.move_forward()
     robot.move_forward()
+    robot.getColor()
+    robot.ultrasonic_front()
     robot.rotate_right()
     robot.move_forward()
     robot.rotate_right()

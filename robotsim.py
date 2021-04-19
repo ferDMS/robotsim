@@ -59,6 +59,9 @@ class Robot:
         self.offset = (pixel_constant - size)//2
         self.sensor_range = pixel_constant
         self.set_position(x,y,w)
+        self.movements = 0
+        self.logic_calls = 0
+        self.points = 0
         
     def set_position(self,x,y,w):
         self.x = x
@@ -79,6 +82,7 @@ class Robot:
 
     def move_forward(self):
         if self.ultrasonicFront() > 0 or self.ultrasonicFront() == -1 :
+            self.movements+=1
             if self.dir == 0:
                 self.row -= 1
             if self.dir == 1:
@@ -98,16 +102,22 @@ class Robot:
                 self.set_position(x2,y2,angle)
     
     def rotate_right(self):
+        self.movements+=1
         self.dir = (self.dir - 1 + 4) % 4
         for _ in range(30):
             generate_map()
             self.set_position(self.x,self.y,self.w - 3)
 
     def rotate_left(self):
+        self.movements+=1
         self.dir = (self.dir + 1) % 4
         for _ in range(30):
             generate_map()
             self.set_position(self.x,self.y,self.w + 3)
+
+    def ultrasonic_front(self):
+        self.logic_calls+=1
+        return self.ultrasonicFront()
 
     def ultrasonicFront(self):
         distance = None
@@ -156,6 +166,7 @@ class Robot:
         return distance * 30
     
     def getColor(self):
+        self.logic_calls+=1
         row = self.row
         col = self.col
         if map.tiles[row][col].color:
@@ -204,6 +215,24 @@ def generate_map():
                     if isinstance(color, list):
                         color = color[-1]
                     pygame.draw.line(gameDisplay, colors[color], (x1_pixel, y1_pixel), (x2_pixel, y2_pixel),5)
+    
+    if robot:
+        myfont = pygame.font.SysFont('Arial', 12)
+        textsurface = myfont.render('Movements = ' + str(robot.movements), False, (0, 0, 0))
+        gameDisplay.blit(textsurface,(pixel_constant*map_info['size']['w'] + pixel_constant*0.2, pixel_constant*0.2))
+        textsurface = myfont.render('Logic calls = ' + str(robot.logic_calls), False, (0, 0, 0))
+        gameDisplay.blit(textsurface,(pixel_constant*map_info['size']['w'] + pixel_constant*0.2, 1.2*pixel_constant))
+        textsurface = myfont.render('Points = ' + str(robot.points), False, (0, 0, 0))
+        gameDisplay.blit(textsurface,(pixel_constant*map_info['size']['w'] + pixel_constant*0.2, 2.2*pixel_constant))
+        
+    else:
+        myfont = pygame.font.SysFont('Arial', 12)
+        textsurface = myfont.render('Movements = 0', False, (0, 0, 0))
+        gameDisplay.blit(textsurface,(pixel_constant*map_info['size']['w'] + pixel_constant*0.2, pixel_constant*0.2))
+        textsurface = myfont.render('Logic calls = 0', False, (0, 0, 0))
+        gameDisplay.blit(textsurface,(pixel_constant*map_info['size']['w'] + pixel_constant*0.2, 1.2*pixel_constant))
+        textsurface = myfont.render('Points = 0', False, (0, 0, 0))
+        gameDisplay.blit(textsurface,(pixel_constant*map_info['size']['w'] + pixel_constant*0.2, 2.2*pixel_constant))
 
 def setup_map():
     global display_width 
@@ -222,8 +251,7 @@ def setup_map():
     pixel_constant = map_info['squareSize'] if map_info['squareSize'] else pixel_constant
     display_width = map_info['size']['w'] * pixel_constant
     display_height = map_info['size']['h'] * pixel_constant
-
-    gameDisplay = pygame.display.set_mode((display_width,display_height))
+    gameDisplay = pygame.display.set_mode((display_width + int(pixel_constant*4), display_height))
 
     #Map initialization
     map = Map(map_info['size']['w'],map_info['size']['h'])
