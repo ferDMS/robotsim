@@ -103,4 +103,4 @@ Cuando se escriba código en main\_program.py se tienen que tomar en cuenta los 
 
 Con suerte, esto se puede solucionar en el futuro, pero por el momento se debe de realizar así para evitar que el programa tenga errores.
 
-Si se identifica cualquier bug por favor manden mensaje a los organizadores de Candiates 2020.
+Si se identifica cualquier bug por favor manden mensaje a los organizadores cprrespondientes del AT 2021.
