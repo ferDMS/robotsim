@@ -34,7 +34,10 @@ robot = None
 map = None
 
 pygame.init()
-robotImg = pygame.image.load('resources/robot.png')
+robotImg = pygame.image.load('resources/robot_gray.png')
+robotBlue = pygame.image.load('resources/robot.png')
+robotRed = pygame.image.load('resources/robot_red.png')
+robotGreen = pygame.image.load('resources/robot_green.png')
 run_button = pygame.image.load('resources/run.png')
 pygame.display.set_caption('Robot simulator')
 clock = pygame.time.Clock()
@@ -58,6 +61,7 @@ class Robot:
         self.size = size
         self.offset = (pixel_constant - size)//2
         self.sensor_range = pixel_constant
+        self.color = 'gray'
         self.set_position(x,y,w)
         self.movements = 0
         self.logic_calls = 0
@@ -75,7 +79,14 @@ class Robot:
         pivot_rotate = pivot.rotate(self.w)
         pivot_move = pivot_rotate - pivot
         origin = (self.x - self.size//2 + min_box[0] - pivot_move[0], self.y - self.size//2 - max_box[1] + pivot_move[1])
-        rotated_image = pygame.transform.rotate(robotImg, self.w)
+        if self.color == 'gray':
+            rotated_image = pygame.transform.rotate(robotImg, self.w)
+        elif self.color == 'blue':
+            rotated_image = pygame.transform.rotate(robotBlue, self.w)
+        elif self.color == 'red':
+            rotated_image = pygame.transform.rotate(robotRed, self.w)
+        elif self.color == 'green':
+            rotated_image = pygame.transform.rotate(robotGreen, self.w)
         gameDisplay.blit(rotated_image, origin)
         pygame.display.update()
         clock.tick(120)
@@ -185,6 +196,11 @@ class Robot:
             elif color in ['red', 'green']:
                 self.points += 25
             print(f'Color successfully identified: {color}')
+            self.color = color
+            self.set_position(self.x,self.y,self.w)
+            self.color = 'gray'
+            pygame.time.delay(1500)
+            self.set_position(self.x,self.y,self.w)
         return
 
     def scan_front(self) -> bool:
@@ -212,7 +228,7 @@ class Robot:
         if self.dir == 0 and row-1 > -1 and map.tiles[row-1][col].object:
             map.tiles[row-1][col].object = False
             self.points += 10
-            
+                
         if self.dir == 1 and col-1 > -1 and map.tiles[row][col-1].object:
             map.tiles[row][col-1].object = False
             self.points += 10
@@ -346,9 +362,15 @@ def setup_map():
 def setup_robot():
     global robot
     global robotImg
+    global robotBlue
+    global robotRed
+    global robotGreen
 
     robot_size = int(pixel_constant * 0.5)
     robotImg = pygame.transform.scale(robotImg, (robot_size, robot_size))
+    robotBlue = pygame.transform.scale(robotBlue, (robot_size, robot_size))
+    robotRed = pygame.transform.scale(robotRed, (robot_size, robot_size))
+    robotGreen = pygame.transform.scale(robotGreen, (robot_size, robot_size))
     gameIcon = pygame.image.load('resources/roborregos_logo.PNG')
     pygame.display.set_icon(gameIcon)
     

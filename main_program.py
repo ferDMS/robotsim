@@ -35,6 +35,7 @@ def main():
     robot.ultrasonic_front()
     robot.rotate_right()
     robot.move_forward()
+    robot.display_color('red')
     robot.rotate_right()
     robot.move_forward()
     robot.move_forward()
@@ -45,6 +46,10 @@ def main():
     robot.move_forward()
     robot.move_forward()
     robot.rotate_right()
+    robot.move_forward()
+    robot.rotate_right()
+    robot.move_forward()
+    robot.display_color('green')
 
 if __name__ == "__main__":
     main()
