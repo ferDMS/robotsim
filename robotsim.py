@@ -79,14 +79,14 @@ class Robot:
         pivot_rotate = pivot.rotate(self.w)
         pivot_move = pivot_rotate - pivot
         origin = (self.x - self.size//2 + min_box[0] - pivot_move[0], self.y - self.size//2 - max_box[1] + pivot_move[1])
-        if self.color == 'gray':
-            rotated_image = pygame.transform.rotate(robotImg, self.w)
-        elif self.color == 'blue':
+        if self.color == 'blue':
             rotated_image = pygame.transform.rotate(robotBlue, self.w)
         elif self.color == 'red':
             rotated_image = pygame.transform.rotate(robotRed, self.w)
         elif self.color == 'green':
             rotated_image = pygame.transform.rotate(robotGreen, self.w)
+        else:
+            rotated_image = pygame.transform.rotate(robotImg, self.w)
         gameDisplay.blit(rotated_image, origin)
         pygame.display.update()
         clock.tick(120)
