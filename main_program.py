@@ -11,7 +11,7 @@ Sensors:
     robot.ultrasonic_front() -> int
     robot.ultrasonic_right() -> int
     robot.ultrasonic_left() -> int
-    robot.getColor() -> string
+    robot.get_color() -> string
     robot.scan_front() -> bool
 '''
 
@@ -36,7 +36,7 @@ def main():
     robot.move_forward()
     robot.rotate_left()
     robot.move_forward()
-    robot.display_color(robot.getColor())
+    robot.display_color(robot.get_color())
     robot.rotate_left()
     robot.rotate_left()
     robot.move_forward()
@@ -49,7 +49,7 @@ def main():
     robot.move_forward()
     robot.rotate_right()
     robot.move_forward()
-    robot.display_color(robot.getColor())
+    robot.display_color(robot.get_color())
     robot.move_forward()
     robot.move_forward()
     robot.rotate_right()
@@ -63,7 +63,7 @@ def main():
     robot.move_forward()
     robot.rotate_right()
     robot.move_forward()
-    robot.display_color(robot.getColor())
+    robot.display_color(robot.get_color())
 
 if __name__ == "__main__":
     main()
