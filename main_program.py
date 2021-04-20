@@ -49,6 +49,7 @@ def main():
     robot.move_forward()
     robot.rotate_right()
     robot.move_forward()
+    robot.display_color(robot.getColor())
     robot.move_forward()
     robot.move_forward()
     robot.rotate_right()

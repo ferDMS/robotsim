@@ -34,11 +34,11 @@ robot = None
 map = None
 
 pygame.init()
-robotImg = pygame.image.load('resources/robot_gray.png')
-robotBlue = pygame.image.load('resources/robot.png')
-robotRed = pygame.image.load('resources/robot_red.png')
-robotGreen = pygame.image.load('resources/robot_green.png')
-run_button = pygame.image.load('resources/run.png')
+robotImg = pygame.image.load('resources/images/robot_gray.png')
+robotBlue = pygame.image.load('resources/images/robot.png')
+robotRed = pygame.image.load('resources/images/robot_red.png')
+robotGreen = pygame.image.load('resources/images/robot_green.png')
+run_button = pygame.image.load('resources/images/run.png')
 pygame.display.set_caption('Robot simulator')
 clock = pygame.time.Clock()
 
@@ -102,7 +102,7 @@ class Robot:
         #   3 -> East
         if self.finished:
             return
-        if self.ultrasonic_front():
+        if self.__getDistance(0):
             self.movements+=1
             if self.dir == 0:
                 self.row -= 1
@@ -465,7 +465,7 @@ def setup_robot():
     robotBlue = pygame.transform.scale(robotBlue, (robot_size, robot_size))
     robotRed = pygame.transform.scale(robotRed, (robot_size, robot_size))
     robotGreen = pygame.transform.scale(robotGreen, (robot_size, robot_size))
-    gameIcon = pygame.image.load('resources/roborregos_logo.PNG')
+    gameIcon = pygame.image.load('resources/images/roborregos_logo.PNG')
     pygame.display.set_icon(gameIcon)
     
     col = map_info['robot_start']['col']

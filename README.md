@@ -1,7 +1,7 @@
 Última actualización: 18/04/2021
 
 #
-<img src="resources/logo.png" width="400" ><img> 
+<img src="resources/docs/logo.png" width="400" ><img> 
 
 ##
 # **robotSim**
@@ -65,9 +65,9 @@ Para correr el simulador, símplemente se debe de correr el comando:
 	$ python robotsim.py
 ```
 
-## Mapa [TODO: Update image]
+## Mapa
 
-![](resources/map.png)
+![](resources/docs/map.png)
 
 El mapa cuenta con las siguientes características:
 
@@ -76,7 +76,7 @@ El mapa cuenta con las siguientes características:
   - Rojo y verde: baldosas especiales (+25 puntos).
   - Azul: baldosas de puntos extra (+10 puntos).
   - Morado: Baldosa de salida.
-- Objetos: color negro.
+- Objetos: círculos color negro.
 
 
 ## Funciones del robot
