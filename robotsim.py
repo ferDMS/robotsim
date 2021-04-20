@@ -52,7 +52,7 @@ with open('resources/map.json') as json_file:
 
 class Robot:
     def __init__(self,x,y,w,size,col,row,dir):
-        self.dir = 0
+        self.dir = dir
         self.x = x
         self.y = y
         self.col = col
@@ -95,9 +95,14 @@ class Robot:
         clock.tick(120)
 
     def move_forward(self):
+        # Map dir:
+        #   0 -> North
+        #   1 -> West
+        #   2 -> South
+        #   3 -> East
         if self.finished:
             return
-        if self.ultrasonicFront() > 0 or self.ultrasonicFront() == -1 :
+        if self.ultrasonic_front():
             self.movements+=1
             if self.dir == 0:
                 self.row -= 1
@@ -139,45 +144,72 @@ class Robot:
         if self.finished:
             return -1
         self.logic_calls+=1
-        return self.ultrasonicFront()
+        return self.__getDistance(0)
 
-    def ultrasonicFront(self):
+    def ultrasonic_right(self):
+        if self.finished:
+            return -1
+        self.logic_calls+=1
+        return self.__getDistance(1)
+
+    def ultrasonic_left(self):
+        if self.finished:
+            return -1
+        self.logic_calls+=1
+        return self.__getDistance(2)
+
+    def __getDistance(self, dir_ultrasonic):
+        # dir:
+        #   Front: 0
+        #   Right: 1
+        #   Left: 2
+        # Map dir:
+        #   0 -> North
+        #   1 -> West
+        #   2 -> South
+        #   3 -> East
+        dirs = [[0, 1, 2, 3],
+                [3, 0, 1, 2],
+                [1, 2, 3, 0]]
+
         distance = None
         start = 0
-        if self.dir == 0:
+        distance_direction = dirs[dir_ultrasonic][self.dir]
+
+        if distance_direction == 0:
             # row-- until 0
             for pos in range(self.row, -1, -1):
-                if map.tiles[pos][self.col].North.status in [1, 2]:
+                if map.tiles[pos][self.col].North.status == 1:
                     distance = start
                     break
                 start += 1
             if distance == None:
                 return -1 
             
-        if self.dir == 1:
+        if distance_direction == 1:
             # col-- until 0 
             for pos in range(self.col, -1, -1):
-                if map.tiles[self.row][pos].West.status in [1, 2]:
+                if map.tiles[self.row][pos].West.status == 1:
                     distance = start
                     break
                 start += 1
             if distance == None:
                 return -1 
 
-        if self.dir == 2:
+        if distance_direction == 2:
             # row++ until max
             for pos in range(self.row, map.height):
-                if map.tiles[pos][self.col].South.status in [1, 2]:
+                if map.tiles[pos][self.col].South.status == 1:
                     distance = start
                     break
                 start += 1
             if distance == None:
                 return -1
 
-        if self.dir == 3:
+        if distance_direction == 3:
             # col++ until 0
             for pos in range(self.col, map.width):
-                if map.tiles[self.row][pos].East.status > 0:
+                if map.tiles[self.row][pos].East.status == 1:
                     distance = start
                     break
                 start += 1
@@ -185,7 +217,7 @@ class Robot:
                 return -1 
         pygame.display.update()
         clock.tick(120)
-        return distance * 30
+        return distance
     
     def getColor(self):
         if self.finished:
@@ -398,19 +430,15 @@ def setup_map():
             "col": map.finish_tile_position[1],
             "color" : "magenta",
             "directions" : [1, 1, 1, 1],
-            "data" : [None, None, None, None]
+            "object" : False
         })
     
     for tile in map_info['tiles']:
         map.tiles[tile['row']][tile['col']].color = tile['color']
-        try:
-            map.tiles[tile['row']][tile['col']].object = tile['object']
-        except KeyError:
-            pass
+        map.tiles[tile['row']][tile['col']].object = tile['object']
         for dir_index in range(len(dir)):
             if getattr(getattr(map.tiles[tile['row']][tile['col']], dir[dir_index]), "status") == 0:
                 setattr(getattr(map.tiles[tile['row']][tile['col']], dir[dir_index]), "status", tile['directions'][dir_index])
-                setattr(getattr(map.tiles[tile['row']][tile['col']], dir[dir_index]), "data", tile['data'][dir_index])
             if tile['directions'][dir_index]:
                 new_row = tile['row'] + dir_reflection_xy[dir_index][0]
                 new_col = tile['col'] + dir_reflection_xy[dir_index][1]
@@ -446,6 +474,8 @@ def setup_robot():
     start_x = col * pixel_constant + robot_size
     start_y = row * pixel_constant + robot_size
     angle = map_info['robot_start']['w']
+    dic_dir = {0:3, 90:0, 180:1, 270:2}
+    dir = dic_dir[angle]
     
     robot = Robot(start_x,start_y,angle,robot_size,col,row,dir)
 
