@@ -130,5 +130,9 @@
             "directions" : [0, 0, 1, 0],
             "data" : [null, null, "1", null]
         }
-    ]
+    ],
+    "finish_tile" : {
+        "row" : 3,
+        "col" : 2
+    }
 }

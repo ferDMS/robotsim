@@ -26,6 +26,8 @@ class Map:
         
         self.tiles = [[False for i in range(self.width)] for j in range(self.height)]
         
+        self.finish_tile_position = (-1, -1)
+
         for x in range(self.width):
             for y in range(self.height):
                 self.tiles[y][x] = Tile()
