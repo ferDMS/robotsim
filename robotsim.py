@@ -199,7 +199,7 @@ class Robot:
             self.color = color
             self.set_position(self.x,self.y,self.w)
             self.color = 'gray'
-            pygame.time.delay(1500)
+            pygame.time.delay(500)
             self.set_position(self.x,self.y,self.w)
         return
 
