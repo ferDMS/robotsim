@@ -45,6 +45,7 @@ def main():
     robot.move_forward()
     robot.move_forward()
     robot.move_forward()
+    robot.finish_round()
     robot.rotate_right()
     robot.move_forward()
     robot.rotate_right()

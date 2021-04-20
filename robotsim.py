@@ -66,6 +66,9 @@ class Robot:
         self.movements = 0
         self.logic_calls = 0
         self.points = 0
+        self.red_color_identified = False
+        self.green_color_identified = False
+        self.finished = False
         
     def set_position(self,x,y,w):
         self.x = x
@@ -92,6 +95,8 @@ class Robot:
         clock.tick(120)
 
     def move_forward(self):
+        if self.finished:
+            return
         if self.ultrasonicFront() > 0 or self.ultrasonicFront() == -1 :
             self.movements+=1
             if self.dir == 0:
@@ -113,6 +118,8 @@ class Robot:
                 self.set_position(x2,y2,angle)
     
     def rotate_right(self):
+        if self.finished:
+            return
         self.movements+=1
         self.dir = (self.dir - 1 + 4) % 4
         for _ in range(30):
@@ -120,6 +127,8 @@ class Robot:
             self.set_position(self.x,self.y,self.w - 3)
 
     def rotate_left(self):
+        if self.finished:
+            return
         self.movements+=1
         self.dir = (self.dir + 1) % 4
         for _ in range(30):
@@ -127,6 +136,8 @@ class Robot:
             self.set_position(self.x,self.y,self.w + 3)
 
     def ultrasonic_front(self):
+        if self.finished:
+            return -1
         self.logic_calls+=1
         return self.ultrasonicFront()
 
@@ -177,6 +188,8 @@ class Robot:
         return distance * 30
     
     def getColor(self):
+        if self.finished:
+            return ''
         self.logic_calls+=1
         row = self.row
         col = self.col
@@ -185,6 +198,8 @@ class Robot:
         return 'white'
     
     def display_color(self, color: str):
+        if self.finished:
+            return
         self.logic_calls += 1
         row = self.row
         col = self.col
@@ -193,8 +208,13 @@ class Robot:
             map.tiles[row][col].color_identified = True
             if color == 'blue':
                 self.points += 10
-            elif color in ['red', 'green']:
+            elif color == 'red':
+                self.red_color_identified = True
                 self.points += 25
+            elif color == 'green':
+                self.green_color_identified = True
+                self.points += 25
+            handle_finish_tile_change()
             print(f'Color successfully identified: {color}')
             self.color = color
             self.set_position(self.x,self.y,self.w)
@@ -204,6 +224,8 @@ class Robot:
         return
 
     def scan_front(self) -> bool:
+        if self.finished:
+            return False
         self.logic_calls += 1
         row = self.row
         col = self.col
@@ -222,6 +244,8 @@ class Robot:
         return False
 
     def grab_obj(self):
+        if self.finished:
+            return
         self.movements += 1
         row = self.row
         col = self.col
@@ -243,6 +267,14 @@ class Robot:
         
         generate_map()
         return
+
+    def finish_round(self):
+        self.logic_calls-=1
+        if self.getColor() == 'magenta':
+            self.points += 60
+            generate_map()
+        self.finished = True
+
 
     def debugTile(self):
         print("(~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)")
@@ -311,6 +343,35 @@ def generate_map():
         textsurface = myfont.render('Points = 0', False, (0, 0, 0))
         gameDisplay.blit(textsurface,(pixel_constant*map_info['size']['w'] + pixel_constant*0.2, 2.2*pixel_constant))
 
+def handle_finish_tile_change():
+    global robot
+    global map
+    
+    row_finish_tile = map.finish_tile_position[0]
+    col_finish_tile = map.finish_tile_position[1]
+    if not is_valid_coordinate(row_finish_tile, col_finish_tile):
+        return
+    
+    dir = ["North","South","East","West"]
+    dir_reflection = ["South","North","West","East"]
+    dir_reflection_xy = [(-1,0),(1,0),(0,1),(0,-1)]
+    if robot.red_color_identified and robot.green_color_identified:
+        for dir_index in range(len(dir)):
+            setattr(getattr(map.tiles[row_finish_tile][col_finish_tile], dir[dir_index]), "status", 0)
+            new_row = row_finish_tile + dir_reflection_xy[dir_index][0]
+            new_col = col_finish_tile + dir_reflection_xy[dir_index][1]
+            if is_valid_coordinate(new_row, new_col):
+                setattr(getattr(map.tiles[new_row][new_col], dir_reflection[dir_index]), "status", 0)
+        generate_map()
+
+
+def is_valid_coordinate(row, col):
+        if row >= map.height or row < 0:
+            return False
+        if col >= map.width or col < 0:
+            return False
+        return True
+
 def setup_map():
     global display_width 
     global display_height 
@@ -318,12 +379,6 @@ def setup_map():
     global gameDisplay
     global map
 
-    def is_valid_coordinate(row, col):
-        if row >= map.height or row < 0:
-            return False
-        if col >= map.width or col < 0:
-            return False
-        return True
 
     pixel_constant = map_info['squareSize'] if map_info['squareSize'] else pixel_constant
     display_width = map_info['size']['w'] * pixel_constant
@@ -335,6 +390,17 @@ def setup_map():
     dir = ["North","South","East","West"]
     dir_reflection = ["South","North","West","East"]
     dir_reflection_xy = [(-1,0),(1,0),(0,1),(0,-1)]
+
+    if map_info['finish_tile']:
+        map.finish_tile_position = (map_info['finish_tile']['row'], map_info['finish_tile']['col'])
+        map_info['tiles'].append({
+            "row": map.finish_tile_position[0],
+            "col": map.finish_tile_position[1],
+            "color" : "magenta",
+            "directions" : [1, 1, 1, 1],
+            "data" : [None, None, None, None]
+        })
+    
     for tile in map_info['tiles']:
         map.tiles[tile['row']][tile['col']].color = tile['color']
         try:
