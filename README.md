@@ -20,7 +20,7 @@
 
 ## Acerca de este proyecto
 
-El simulador fue adaptado específicamente para los retos del [Congreso AT 2021](https://www.facebook.com/automatizacionytecnologia/). En esta versión, se tiene un entorno específico para el reto [Mace Race 2021](http://bit.ly/MazeRaceAT17 ).
+El simulador fue adaptado específicamente para los retos del [Congreso AT 2021](https://www.facebook.com/automatizacionytecnologia/). En esta versión, se tiene un entorno específico para el reto [Maze Race 2021](http://bit.ly/MazeRaceAT17 ).
 
 </br>
 
