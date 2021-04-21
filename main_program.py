@@ -1,61 +1,104 @@
 '''
-Control: 
+Control:
     robot.move_forward()
     robot.rotate_right()
     robot.rotate_left()
-
-Sensors:    
-    robot.ultrasonicFront() -> int
-    robot.ultrasonicRight() -> int
-    robot.ultrasonicLeft() -> int
-    robot.detectFireFront() -> bool
-    robot.scanEnvironment() -> string ("fire", "people", "collapse", "clear", "safe")
-
-Actions: 
-    robot.putOutFireFront()
-    robot.sendMessageExplorationBase(Coord)
-    robot.sendMessageRescueBase(Coord, path)
-    robot.finishExploration()
+    robot.display_color(string)
+    robot.finish_round()
+    robot.grab_obj()
+Sensors:
+    robot.ultrasonic_front() -> int
+    robot.ultrasonic_right() -> int
+    robot.ultrasonic_left() -> int
+    robot.get_color() -> string
+    robot.scan_front() -> bool
 '''
 
 def main():
-    ############################################
-    #Test 3: Robot apaga fuego, envía correctamente
-    # mensaje de derrumbe, salva personas y regresa
-    # a la base.
-    ############################################
+    robot.rotate_right()
+    robot.move_forward()
+    robot.move_forward()
+    robot.rotate_left()
+    robot.move_forward()
     robot.move_forward()
     robot.rotate_right()
     robot.move_forward()
+    robot.move_forward()
+    robot.move_forward()
+    robot.move_forward()
+    robot.move_forward()
+    robot.move_forward()
     robot.rotate_left()
-    print("Fire in the front:", robot.detectFireFront())
-    robot.putOutFireFront()
+    robot.move_forward()
+    robot.move_forward()
+    robot.move_forward()
+    robot.move_forward()
+    robot.rotate_left()
+    robot.move_forward()
+    robot.display_color(robot.get_color())
+    robot.rotate_left()
+    robot.rotate_left()
+    robot.move_forward()
+    robot.move_forward()
+    robot.rotate_right()
+    robot.move_forward()
+    robot.move_forward()
+    robot.rotate_left()
+    robot.move_forward()
+    robot.move_forward()
+    robot.rotate_right()
+    robot.move_forward()
+    robot.display_color(robot.get_color())
+    robot.move_forward()
+    robot.move_forward()
+    robot.rotate_right()
+    robot.move_forward()
+    robot.grab_obj()
+    robot.move_forward()
+    robot.move_forward()
+    robot.rotate_left()
+    robot.move_forward()
+    robot.rotate_right()
+    robot.move_forward()
+    robot.rotate_right()
+    robot.move_forward()
+    robot.display_color(robot.get_color())
+    robot.rotate_right()
+    robot.rotate_right()
+    robot.move_forward()
+    robot.rotate_left()
+    robot.move_forward()
+    robot.rotate_left()
+    robot.move_forward()
+    robot.rotate_right()
+    robot.move_forward()
+    robot.move_forward()
+    robot.move_forward()
+    robot.move_forward()
+    robot.rotate_left()
+    robot.move_forward()
+    robot.move_forward()
+    robot.move_forward()
+    robot.move_forward()
+    robot.display_color(robot.get_color())
     robot.rotate_right()
     robot.move_forward()
     robot.rotate_left()
     robot.move_forward()
     robot.move_forward()
-    print("Collapse alert successfull:",robot.sendMessageExplorationBase(Coord(3,2)))
+    robot.rotate_right()
+    robot.move_forward()
+    robot.move_forward()
     robot.move_forward()
     robot.rotate_right()
     robot.move_forward()
-    print("People saved?",robot.sendMessageRescueBase(Coord(4,3), ['N', 'N']))
-    robot.rotate_left()
-    robot.move_forward()
-    robot.rotate_left()
-    robot.putOutFireFront()
-    robot.move_forward()
-    robot.putOutFireFront()
     robot.move_forward()
     robot.move_forward()
+    robot.display_color(robot.get_color())
     robot.rotate_left()
     robot.move_forward()
     robot.move_forward()
-    robot.move_forward()
-    robot.move_forward()
-    robot.move_forward()
-    robot.finishExploration()
-    
+    robot.finish_round()
 
 if __name__ == "__main__":
     main()

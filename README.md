@@ -1,13 +1,14 @@
-Última actualización: 24/10/2020
+Última actualización: 20/04/2021
 
 #
-
-![](resources/logo.png)
+<img src="resources/docs/logo.png" width="400" ><img>
+</br>
+<img src="resources/docs/logo_name.png" width="400" ><img> 
 
 ##
 # **robotSim**
 
-_ **robotSim** _ es un proyecto en desarrollo, así que le pedimos a los participantes de Candidates 2020 que estén atentos a cualquier aviso de actualización del programa. Igualmente, si hay cualquier duda no duden en contactarse con los programadores RoBorregos:
+**robotSim** es un proyecto en desarrollo, así que le pedimos a los participantes del AT 2021 que estén atentos a cualquier aviso de actualización del programa. Igualmente, si hay cualquier duda no duden en contactarse con los programadores RoBorregos:
 
 | Nombre | Correo | Github |
 | ---- | ----- | ------ |
@@ -15,15 +16,31 @@ _ **robotSim** _ es un proyecto en desarrollo, así que le pedimos a los partici
 | Keven Arroyo | [A01283678@itesm.mx](mailto:A01283678@itesm.mx) | [@dake3601](https://github.com/dake3601) |
 | Aurora Tijerina | [A01196690@itesm.mx](mailto:A01196690@itesm.mx) | [@AuroTB](https://github.com/AuroTB) |
 
+</br>
 
-### Acerca de este proyecto
+## Acerca de este proyecto
 
-El simulador fue adaptado específicamente para los retos de Candidates 2020. En esta versión, se tiene un entorno específico para el [Hack de Programación de Robótica 2020](https://drive.google.com/file/d/1B0jB0Iq4SKzmIq1SzM4XoDQHxFvHWOdm/view?usp=sharing).
+El simulador fue adaptado específicamente para los retos del [Congreso AT 2021](https://www.facebook.com/automatizacionytecnologia/). En esta versión, se tiene un entorno específico para el reto [Mace Race 2021](http://bit.ly/MazeRaceAT17 ).
 
+</br>
 
-### Uso del simulador
+## Uso del simulador
 
-#### Correr programa localmente
+### Correrlo online en Replit.com
+
+1. Ingresar a nuestro [Repositorio de Replit](https://staging.replit.com/@AuroraTijerina1/Mace-Race-2021).
+
+2. Dar "fork" o edita el código en un workspace.
+
+3. Codificar movimientos del robot en main\_program.py
+
+4. Simular Programa 
+	```bash
+	$ python robotsim.py
+	```
+PD: Si no alcanzas a ver completamente el mapa puedes darle ```ctrl+-``` a tu navegador para que quepa en pantalla.
+
+### Correr simulador localmente
 
 1. Clonar el repositorio del proyecto.
 
@@ -56,67 +73,58 @@ El simulador fue adaptado específicamente para los retos de Candidates 2020. En
 	```bash
 	$ python robotsim.py
 	```
-#### Correr online en Repl.it
 
-1. Entrar a https://repl.it/languages/pygame
-2. Copiar todos los archivos del repositorio en el env
-3. Poner comando en terminal: python robotsim.py 
+</br>
 
-
-### Información Archivos 
+## Información para developer 
 El repositorio tiene los siguientes archivos en un folder:
 
-- **main\_program.py:** script donde se programan los movimientos del robot
-- **map.json:** descripción del mapa, sirve como entrada para que el programa genere la imagen
-- **map.py y robotsim.py:** building class para el objeto mapa y script de inicialización y actualización del entorno.
-- **imágenes del programa:** imágen del robot y del botón de play (run.png y robot.png).
+- **main\_program.py:** script donde se programan los movimientos del robot.
+- **robotsim.py:** script de inicialización y actualización del entorno de simulación.
+- **resources/map.json:** descripción del mapa (test case).
 
-Para correr el programa, símplemente se debe de correr el comando:
+Para correr el simulador, símplemente se debe de correr el comando:
 ```bash
 	$ python robotsim.py
 ```
 
+</br>
 
-### Mapa
+## Mapa
 
-![](resources/map.png)
+![](resources/docs/map.png)
 
 El mapa cuenta con las siguientes características:
 
-- Dimensiones de 8x8
-- Paredes alrededor de todo el perímetro a recorrer
-- Líneas negras: Edificios/estructuras urbanas
-- Zonas rojas: Personas
-- Zonas cyan: Safe zones
-- Zonas rosas: Zona de derrumbe/peligro
-- Zona amarilla: Incendio
-- Contadores:
-	- Movimientos
-	- Puntos (de acuerdo a la rúbrica descrita en la descripción del Hack de programación)
+- Dimensión de 20x30
+- Paredes de color negro
+- Baldosas de colores:
+  - Rojo y verde: baldosas especiales (+25 puntos).
+  - Azul: baldosas de puntos extra (+10 puntos).
+  - Morado: Baldosa de salida.
+- Objetos: círculos color negro.
 
-Cabe recalcar que el robot **siempre** empezará en la base de bomberos (coordenada 0,0) viendo hacia el **ESTE** (derecha) de acuerdo a la rosa de los vientos.  
-Igualmente, después de 300 movimientos el programa se terminará.
+</br>
 
+## Funciones del robot
 
-### Funciones del robot
+| **Función** | **Descripción** | **Input** | **Output** |
+| --- | --- | --- | --- |
+| robot.move\_forward() | Mueve el robot a la baldosa de enfrente | - | - |
+| robot.rotate\_right() | Gira el robot 90° a la derecha | - | - |
+| robot.rotate\_left() | Gira el robot 90° a la izquierda | - | - |
+| robot.display_color(color) | Hace que el robot señale un color específico. | string ('blue', 'red', 'green') | bool (color identificado correctamente) |
+| robot.grab\_obj() | Agarra el objeto frente a éste (si hay alguno)) | - | bool (objeto agarrado) |
+| robot.finish\_round() | Termina la ronda. | - | - |
+| robot.ultrasonic\_front() | Obtiene la distancia frente al robot en centímetros. | int (número de cuadros libres frente al robot)|
+| robot.ultrasonic\right() | Obtiene la distancia a la derecha del robot en centímetros. | int (número de cuadros libres a la derecha del robot)|
+| robot.ultrasonic\left() | Obtiene la distancia a la izquierda del robot en centímetros. | int (número de cuadros libres a la izquierda del robot)|
+| robot.getColor() | Obtiene el color de la baldosa en la que el robot se encuentra | - | string ('green','red','white', 'blue', 'purple') |
+| robot.scan\_front() | Detecta si hay un objeto frente al robot. | - | bool (se detectó un objeto o no) |
 
-| **Función** | **Descripción** | **Input/Output** |
-| --- | --- | --- |
-| robot.move\_forward() | Mueve el robot a la baldosa de enfrente | - |
-| robot.rotate\_right() | Gira el robot 90° a la derecha | - |
-| robot.rotate\_left() | Gira el robot 90° a la izquierda | - |
-| robot.ultrasonicFront() | Obtiene la distancia (número de cuadrantes libres) frente al robot | Output: int |
-| robot.ultrasonicRight() | Obtiene la distancia (número de cuadrantes libres) a la derecha del robot | Output: int |
-| robot.ultrasonicLeft() | Obtiene la distancia (número de cuadrantes libres) a la izquierda del robot | Output: int |
-| robot.detectFireFront() | Regresa si la baldosa enfrente del robot tiene o no fuego. | Output: bool |
-| robot.scanEnvironment() | Regresa el tipo de ambiente en el que se encuentra el robot: "fire", "people", "collapse", "clear", "safe" | Output: string |
-| robot.putOutFireFront() | Apaga el fuego en la baldosa que está enfrente del robot. | - |
-| robot.sendMessageExplorationBase(Coord) | Envía coordenadas a la base de exploración | Input: obj Coord <br/>Output: bool |
-| robot.sendMessageRescueBase(Coord, path) | Envía coordenadas a la base de rescate y (opcionalmente) un path a una zona segura. El path debe tener la forma de una lista de caracteres hacia las direcciones de acuerdo a la rosa de los vientos: <br/>-N: Norte (North) <br/>-S: Sur (South) <br/>-E: Este (East) <br/>-W: Oeste (west) <br/>Ejemplo: <br/>[‘N’, ‘E’, ‘S’, ‘S’, ‘W’] | Input: obj Coord, (opcional) lista de direcciones a seguir <br/>Output: true |
-| robot.finishExploration() | Termina la simulación. Si se realiza esta función sobre la coordenada 0,0 el robot habrá regresado a la base y se agregan 20 puntos al contador. | Output: simulación termina. |
+</br>
 
-
-### Importante
+## Importante
 
 Cuando se escriba código en main\_program.py se tienen que tomar en cuenta los siguientes detalles:
 
@@ -126,4 +134,4 @@ Cuando se escriba código en main\_program.py se tienen que tomar en cuenta los 
 
 Con suerte, esto se puede solucionar en el futuro, pero por el momento se debe de realizar así para evitar que el programa tenga errores.
 
-Si se identifica cualquier bug por favor manden mensaje a los organizadores de Candiates 2020.
+Si se identifica cualquier bug por favor manden mensaje a los organizadores correspondientes del Congreso AT 2021.
