@@ -1,5 +1,3 @@
-import sys
-import math
 import json
 from modules.map import Map
 

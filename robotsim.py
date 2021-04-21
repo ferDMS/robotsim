@@ -295,7 +295,14 @@ class Robot:
         self.logic_calls -= 1
         if self.get_color() == 'magenta':
             self.points += 60
+            print('Arrived correctly to exit: +60')
             generate_map()
+        print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+        print('Program finished!')
+        print("Total points: ", self.points)
+        print("Total movements: ", self.movements)
+        print("Total logic calls: ", self.logic_calls)
+        print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
         self.finished = True
         return
 
