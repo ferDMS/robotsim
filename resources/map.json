@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
     "squareSize":30,
     "size":{
         "w":30,
@@ -22,29 +21,10 @@
                 0,
                 0
             ]
-=======
-    "squareSize" : 70,
-    "size" : {
-        "w":8,
-        "h":8
-    },
-    "robot_start" : {
-        "row" : 0,
-        "col" : 0,
-        "w" : 0
-    },
-    "tiles" : [
-        {
-            "row":0,
-            "col":0,
-            "color" : "cyan",
-            "directions" : [1, 0, 0, 1]
->>>>>>> master
         },
         {
             "row":0,
             "col":1,
-<<<<<<< HEAD
             "color":"white",
             "object":false,
             "directions":[
@@ -53,15 +33,10 @@
                 0,
                 0
             ]
-=======
-            "color" : "white",
-            "directions" : [1, 0, 0, 0]
->>>>>>> master
         },
         {
             "row":0,
             "col":2,
-<<<<<<< HEAD
             "color":"white",
             "object":false,
             "directions":[
@@ -70,15 +45,10 @@
                 0,
                 1
             ]
-=======
-            "color" : "white",
-            "directions" : [1, 0, 0, 0]
->>>>>>> master
         },
         {
             "row":0,
             "col":3,
-<<<<<<< HEAD
             "color":"white",
             "object":false,
             "directions":[
@@ -87,15 +57,10 @@
                 0,
                 0
             ]
-=======
-            "color" : "white",
-            "directions" : [1, 0, 0, 0]
->>>>>>> master
         },
         {
             "row":0,
             "col":4,
-<<<<<<< HEAD
             "color":"white",
             "object":false,
             "directions":[
@@ -104,15 +69,10 @@
                 0,
                 0
             ]
-=======
-            "color" : "cyan",
-            "directions" : [1, 0, 0, 0]
->>>>>>> master
         },
         {
             "row":0,
             "col":5,
-<<<<<<< HEAD
             "color":"white",
             "object":false,
             "directions":[
@@ -121,15 +81,10 @@
                 0,
                 1
             ]
-=======
-            "color" : "white",
-            "directions" : [1, 0, 0, 0]
->>>>>>> master
         },
         {
             "row":0,
             "col":6,
-<<<<<<< HEAD
             "color":"white",
             "object":false,
             "directions":[
@@ -138,15 +93,10 @@
                 0,
                 0
             ]
-=======
-            "color" : "white",
-            "directions" : [1, 0, 0, 0]
->>>>>>> master
         },
         {
             "row":0,
             "col":7,
-<<<<<<< HEAD
             "color":"white",
             "object":false,
             "directions":[
@@ -419,15 +369,10 @@
                 1,
                 0
             ]
-=======
-            "color" : "white",
-            "directions" : [1, 0, 1, 0]
->>>>>>> master
         },
         {
             "row":1,
             "col":0,
-<<<<<<< HEAD
             "color":"white",
             "object":false,
             "directions":[
@@ -448,15 +393,10 @@
                 1,
                 1
             ]
-=======
-            "color" : "white",
-            "directions" : [0, 0, 1, 1]
->>>>>>> master
         },
         {
             "row":1,
             "col":2,
-<<<<<<< HEAD
             "color":"white",
             "object":false,
             "directions":[
@@ -477,15 +417,10 @@
                 0,
                 0
             ]
-=======
-            "color" : "yellow",
-            "directions" : [1, 0, 0, 0]
->>>>>>> master
         },
         {
             "row":1,
             "col":4,
-<<<<<<< HEAD
             "color":"white",
             "object":false,
             "directions":[
@@ -494,15 +429,10 @@
                 0,
                 1
             ]
-=======
-            "color" : "cyan",
-            "directions" : [1, 0, 0, 0]
->>>>>>> master
         },
         {
             "row":1,
             "col":5,
-<<<<<<< HEAD
             "color":"white",
             "object":false,
             "directions":[
@@ -523,15 +453,10 @@
                 1,
                 1
             ]
-=======
-            "color" : "yellow",
-            "directions" : [0, 0, 0, 0]
->>>>>>> master
         },
         {
             "row":1,
             "col":7,
-<<<<<<< HEAD
             "color":"white",
             "object":false,
             "directions":[
@@ -804,15 +729,10 @@
                 1,
                 0
             ]
-=======
-            "color" : "yellow",
-            "directions" : [0, 0, 1, 0]
->>>>>>> master
         },
         {
             "row":2,
             "col":0,
-<<<<<<< HEAD
             "color":"white",
             "object":false,
             "directions":[
@@ -845,15 +765,10 @@
                 0,
                 0
             ]
-=======
-            "color" : "white",
-            "directions" : [0, 0, 0, 1]
->>>>>>> master
         },
         {
             "row":2,
             "col":3,
-<<<<<<< HEAD
             "color":"white",
             "object":false,
             "directions":[
@@ -874,15 +789,10 @@
                 0,
                 0
             ]
-=======
-            "color" : "pink",
-            "directions" : [0, 0, 0, 0]
->>>>>>> master
         },
         {
             "row":2,
             "col":5,
-<<<<<<< HEAD
             "color":"white",
             "object":false,
             "directions":[
@@ -903,15 +813,10 @@
                 1,
                 0
             ]
-=======
-            "color" : "yellow",
-            "directions" : [0, 0, 0, 0]
->>>>>>> master
         },
         {
             "row":2,
             "col":7,
-<<<<<<< HEAD
             "color":"white",
             "object":false,
             "directions":[
@@ -7310,148 +7215,4 @@
         "row":18,
         "col":4
     }
-=======
-            "color" : "white",
-            "directions" : [0, 0, 1, 0]
-        },
-        {
-            "row":3,
-            "col":0,
-            "color" : "white",
-            "directions" : [0, 0, 0, 1]
-        },
-        {
-            "row":3,
-            "col":3,
-            "color" : "red",
-            "directions" : [1, 0, 1, 0]
-        },
-        {
-            "row":3,
-            "col":4,
-            "color" : "red",
-            "directions" : [0, 1, 0, 1]
-        },
-        {
-            "row":3,
-            "col":7,
-            "color" : "white",
-            "directions" : [0, 0, 1, 0]
-        },
-        {
-            "row":4,
-            "col":0,
-            "color" : "yellow",
-            "directions" : [0, 0, 0, 1]
-        },
-        {
-            "row":4,
-            "col":1,
-            "color" : "cyan",
-            "directions" : [1, 0, 1, 1]
-        },
-        {
-            "row":4,
-            "col":3,
-            "color" : "pink",
-            "directions" : [0, 0, 0, 0]
-        },
-        {
-            "row":4,
-            "col":5,
-            "color" : "yellow",
-            "directions" : [0, 0, 1, 0]
-        },
-        {
-            "row":4,
-            "col":7,
-            "color" : "white",
-            "directions" : [0, 0, 1, 0]
-        },
-        {
-            "row":5,
-            "col":0,
-            "color" : "red",
-            "directions" : [0, 0, 1, 1]
-        },
-        {
-            "row":5,
-            "col":2,
-            "color" : "red",
-            "directions" : [0, 0, 1, 1]
-        },
-        {
-            "row":5,
-            "col":7,
-            "color" : "white",
-            "directions" : [0, 0, 1, 0]
-        },
-        {
-            "row":6,
-            "col":0,
-            "color" : "white",
-            "directions" : [0, 0, 1, 1]
-        },
-        {
-            "row":6,
-            "col":2,
-            "color" : "white",
-            "directions" : [0, 0, 1, 0]
-        },
-        {
-            "row":6,
-            "col":7,
-            "color" : "white",
-            "directions" : [0, 0, 1, 0]
-        },
-        {
-            "row":7,
-            "col":0,
-            "color" : "white",
-            "directions" : [0, 1, 0, 1]
-        },
-        {
-            "row":7,
-            "col":1,
-            "color" : "white",
-            "directions" : [0, 1, 0, 0]
-        },
-        {
-            "row":7,
-            "col":2,
-            "color" : "pink",
-            "directions" : [0, 1, 0, 0]
-        },
-        {
-            "row":7,
-            "col":3,
-            "color" : "white",
-            "directions" : [0, 1, 0, 0]
-        },
-        {
-            "row":7,
-            "col":4,
-            "color" : "white",
-            "directions" : [1, 1, 1, 1]
-        },
-        {
-            "row":7,
-            "col":5,
-            "color" : "white",
-            "directions" : [0, 1, 0, 0]
-        },
-        {
-            "row":7,
-            "col":6,
-            "color" : "white",
-            "directions" : [0, 1, 0, 0]
-        },
-        {
-            "row":7,
-            "col":7,
-            "color" : "white",
-            "directions" : [0, 1, 1, 0]
-        }
-    ]
->>>>>>> master
 }

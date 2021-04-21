@@ -16,10 +16,13 @@
 | Keven Arroyo | [A01283678@itesm.mx](mailto:A01283678@itesm.mx) | [@dake3601](https://github.com/dake3601) |
 | Aurora Tijerina | [A01196690@itesm.mx](mailto:A01196690@itesm.mx) | [@AuroTB](https://github.com/AuroTB) |
 
+</br>
 
 ## Acerca de este proyecto
 
 El simulador fue adaptado específicamente para los retos del [Congreso AT 2021](https://www.facebook.com/automatizacionytecnologia/). En esta versión, se tiene un entorno específico para el reto [Mace Race 2021](http://bit.ly/MazeRaceAT17 ).
+
+</br>
 
 ## Uso del simulador
 
@@ -38,8 +41,6 @@ El simulador fue adaptado específicamente para los retos del [Congreso AT 2021]
 PD: Si no alcanzas a ver completamente el mapa puedes darle ```ctrl+-``` a tu navegador para que quepa en pantalla.
 
 ### Correr simulador localmente
-
-#### Correr programa localmente
 
 1. Clonar el repositorio del proyecto.
 
@@ -72,7 +73,9 @@ PD: Si no alcanzas a ver completamente el mapa puedes darle ```ctrl+-``` a tu na
 	```bash
 	$ python robotsim.py
 	```
-    
+
+</br>
+
 ## Información para developer 
 El repositorio tiene los siguientes archivos en un folder:
 
@@ -84,6 +87,8 @@ Para correr el simulador, símplemente se debe de correr el comando:
 ```bash
 	$ python robotsim.py
 ```
+
+</br>
 
 ## Mapa
 
@@ -99,6 +104,7 @@ El mapa cuenta con las siguientes características:
   - Morado: Baldosa de salida.
 - Objetos: círculos color negro.
 
+</br>
 
 ## Funciones del robot
 
@@ -115,6 +121,8 @@ El mapa cuenta con las siguientes características:
 | robot.ultrasonic\left() | Obtiene la distancia a la izquierda del robot en centímetros. | int (número de cuadros libres a la izquierda del robot)|
 | robot.getColor() | Obtiene el color de la baldosa en la que el robot se encuentra | - | string ('green','red','white', 'blue', 'purple') |
 | robot.scan\_front() | Detecta si hay un objeto frente al robot. | - | bool (se detectó un objeto o no) |
+
+</br>
 
 ## Importante
 
