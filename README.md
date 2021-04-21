@@ -1,4 +1,4 @@
-Última actualización: 18/04/2021
+Última actualización: 20/04/2021
 
 #
 <img src="resources/docs/logo.png" width="400" ><img>
@@ -38,6 +38,8 @@ El simulador fue adaptado específicamente para los retos del [Congreso AT 2021]
 PD: Si no alcanzas a ver completamente el mapa puedes darle ```ctrl+-``` a tu navegador para que quepa en pantalla.
 
 ### Correr simulador localmente
+
+#### Correr programa localmente
 
 1. Clonar el repositorio del proyecto.
 
@@ -89,6 +91,7 @@ Para correr el simulador, símplemente se debe de correr el comando:
 
 El mapa cuenta con las siguientes características:
 
+- Dimensión de 20x30
 - Paredes de color negro
 - Baldosas de colores:
   - Rojo y verde: baldosas especiales (+25 puntos).

@@ -320,6 +320,7 @@ class Robot:
         print("(~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)")
         return
 
+    
 
 def generate_map() -> None:
     for event in pygame.event.get():

@@ -1,5 +1,5 @@
 '''
-Control:
+Control: 
     robot.move_forward()
     robot.rotate_right()
     robot.rotate_left()
@@ -43,8 +43,13 @@ def main():
     robot.move_forward()
     robot.rotate_right()
     robot.move_forward()
+    robot.rotate_left()
     robot.move_forward()
     robot.rotate_left()
+    robot.putOutFireFront()
+    robot.move_forward()
+    robot.putOutFireFront()
+    robot.move_forward()
     robot.move_forward()
     robot.move_forward()
     robot.rotate_right()
