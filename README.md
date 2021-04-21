@@ -1,12 +1,14 @@
 Última actualización: 18/04/2021
 
 #
-<img src="resources/docs/logo.png" width="400" ><img> 
+<img src="resources/docs/logo.png" width="400" ><img>
+</br>
+<img src="resources/docs/logo_name.png" width="400" ><img> 
 
 ##
 # **robotSim**
 
-_ **robotSim** _ es un proyecto en desarrollo, así que le pedimos a los participantes del AT 2021 que estén atentos a cualquier aviso de actualización del programa. Igualmente, si hay cualquier duda no duden en contactarse con los programadores RoBorregos:
+**robotSim** es un proyecto en desarrollo, así que le pedimos a los participantes del AT 2021 que estén atentos a cualquier aviso de actualización del programa. Igualmente, si hay cualquier duda no duden en contactarse con los programadores RoBorregos:
 
 | Nombre | Correo | Github |
 | ---- | ----- | ------ |
