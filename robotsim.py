@@ -68,8 +68,6 @@ class Robot:
         self.yEnd = 0
         self.missing_color = 'white'
         self.white = False
-        # self.red_color_identified = False
-        # self.green_color_identified = False
         self.finished = False
 
     def set_position(self, x: int, y: int, w: int) -> None:
@@ -281,51 +279,6 @@ class Robot:
             self.set_position(self.x, self.y, self.w)
         return
 
-    # def scan_front(self) -> bool:
-    #     if self.finished:
-    #         return False
-    #     self.logic_calls += 1
-    #     row = self.row
-    #     col = self.col
-    #     if self.dir == 0 and row-1 > -1:
-    #         return game_map.tiles[row-1][col].object
-
-    #     if self.dir == 1 and col-1 > -1:
-    #         return game_map.tiles[row][col-1].object
-
-    #     if self.dir == 2 and row+1 < game_map.height:
-    #         return game_map.tiles[row+1][col].object
-
-    #     if self.dir == 3 and col+1 < game_map.width:
-    #         return game_map.tiles[row][col+1].object
-
-    #     return False
-
-    # def grab_obj(self) -> None:
-    #     if self.finished:
-    #         return
-    #     self.movements += 1
-    #     row = self.row
-    #     col = self.col
-    #     if self.dir == 0 and row-1 > -1 and game_map.tiles[row-1][col].object:
-    #         game_map.tiles[row-1][col].object = False
-    #         self.points += 10
-
-    #     if self.dir == 1 and col-1 > -1 and game_map.tiles[row][col-1].object:
-    #         game_map.tiles[row][col-1].object = False
-    #         self.points += 10
-
-    #     if self.dir == 2 and row+1 < game_map.height and game_map.tiles[row+1][col].object:
-    #         game_map.tiles[row+1][col].object = False
-    #         self.points += 10
-
-    #     if self.dir == 3 and col+1 < game_map.width and game_map.tiles[row][col+1].object:
-    #         game_map.tiles[row][col+1].object = False
-    #         self.points += 10
-
-    #     generate_map()
-    #     return
-
     def finish_round(self) -> None:
         self.logic_calls -= 1
         if self.col == exit_col and self.row == exit_row:
@@ -374,13 +327,6 @@ def generate_map() -> None:
                 pygame.draw.rect(
                     game_display, c, (x, y, pixel_constant, pixel_constant))
 
-            # if game_map.tiles[row][col].object:
-            #     x = col * pixel_constant + pixel_constant//2
-            #     y = row * pixel_constant + pixel_constant//2
-            #     c = COLORS[game_map.tiles[row][col].color]
-            #     pygame.draw.circle(
-            #         game_display, COLORS['black'], (x, y), pixel_constant//4, 1)
-
             # Tile walls in north, south, east and west order
             x1 = [0, 0, 1, 0]
             y1 = [0, 1, 0, 0]
@@ -426,28 +372,6 @@ def generate_map() -> None:
     return
 
 
-# def handle_finish_tile_change() -> None:
-#     row_finish_tile = game_map.finish_tile_position[0]
-#     col_finish_tile = game_map.finish_tile_position[1]
-#     if not is_valid_coordinate(row_finish_tile, col_finish_tile):
-#         return
-
-#     direction = ["north", "south", "east", "west"]
-#     dir_reflection = ["south", "north", "west", "east"]
-#     dir_reflection_xy = [(-1, 0), (1, 0), (0, 1), (0, -1)]
-#     if robot.red_color_identified and robot.green_color_identified:
-#         for dir_index in range(len(direction)):
-#             setattr(getattr(game_map.tiles[row_finish_tile][col_finish_tile],
-#                             direction[dir_index]), "status", 0)
-#             new_row = row_finish_tile + dir_reflection_xy[dir_index][0]
-#             new_col = col_finish_tile + dir_reflection_xy[dir_index][1]
-#             if is_valid_coordinate(new_row, new_col):
-#                 setattr(getattr(game_map.tiles[new_row][new_col],
-#                                 dir_reflection[dir_index]), "status", 0)
-#         generate_map()
-#     return
-
-
 def is_valid_coordinate(row: int, col: int) -> bool:
     if row >= game_map.height or row < 0:
         return False
@@ -478,23 +402,11 @@ def setup_map() -> None:
     dir_reflection = ["south", "north", "west", "east"]
     dir_reflection_xy = [(-1, 0), (1, 0), (0, 1), (0, -1)]
 
-    # if map_info['finish_tile']:
-    #     game_map.finish_tile_position = (
-    #         map_info['finish_tile']['row'], map_info['finish_tile']['col'])
-    #     map_info['tiles'].append({
-    #         "row": game_map.finish_tile_position[0],
-    #         "col": game_map.finish_tile_position[1],
-    #         "color": "magenta",
-    #         "directions": [1, 1, 1, 1],
-    #         "object": False
-    #     })
-
     color_count = {'blue': 0, 'red': 0, 'green': 0, 'magenta': 0, 'yellow': 0, 'cyan': 0, 'white': 0}
 
     for tile in map_info['tiles']:
         game_map.tiles[tile['row']][tile['col']].color = tile['color']
         color_count[tile['color']] += 1
-        # game_map.tiles[tile['row']][tile['col']].object = tile['object'] if 'object' in tile else False
         for dir_index in range(len(direction)):
             if getattr(getattr(game_map.tiles[tile['row']][tile['col']],
                                direction[dir_index]), "status") == 0:
