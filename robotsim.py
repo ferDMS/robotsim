@@ -490,6 +490,7 @@ def setup_robot() -> None:
     direction = dic_dir[angle]
 
     robot = Robot(start_x, start_y, angle, robot_size, col, row, direction)
+    robot.set_position(start_x, start_y, angle)
     return
 
 
