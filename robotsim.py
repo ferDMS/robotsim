@@ -470,7 +470,7 @@ def setup_map() -> None:
     display_width = map_info['size']['w'] * pixel_constant
     display_height = map_info['size']['h'] * pixel_constant
     game_display = pygame.display.set_mode(
-        (display_width + int(pixel_constant*4), display_height))
+        (display_width + int(pixel_constant*2), display_height))
 
     # Map initialization
     game_map = Map(map_info['size']['w'], map_info['size']['h'])
