@@ -67,6 +67,7 @@ class Robot:
         self.xEnd = 0
         self.yEnd = 0
         self.missing_color = 'white'
+        self.white = False
         # self.red_color_identified = False
         # self.green_color_identified = False
         self.finished = False
@@ -105,7 +106,23 @@ class Robot:
         pygame.display.update()
         clock.tick(120)
         return
-
+    
+    def detect_white(self, old_row, olr_col) -> None:
+        if self.white:
+            return
+        game_map.tiles[self.row][self.col].touched = True
+        game_map.tiles[old_row][olr_col].touched = True
+        for r in range(game_map.height):
+            for c in range(game_map.width):
+                if not game_map.tiles[r][c].touched:
+                    return
+        if game_map.tiles[self.row][self.col].color == 'white':
+            self.white = True
+            self.points += 30
+            print('On white square after exploring the entire labyrinth: +30')
+            generate_map()
+        return
+    
     def move_forward(self) -> None:
         # Map dir:
         #   0 -> north
@@ -125,6 +142,7 @@ class Robot:
                 y1 = self.y - round(math.sin(rad))
                 generate_map()
                 self.set_position(x1, y1, self.w)
+            self.detect_white(self.row - factor[self.dir][0], self.col - factor[self.dir][1])
         return
 
     def rotate_right(self) -> None:
@@ -590,7 +608,9 @@ if __name__ == "__main__":
                         reset = True
 
         if reset:
+            print('Round start')
             main()
+            print('Round end')
             reset = False
         else:
             run_button = pygame.transform.scale(
