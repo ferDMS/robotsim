@@ -4,6 +4,8 @@ import json
 import pygame
 from modules.map import Map
 
+EVAL_MODE = False
+
 pixel_constant = 50
 display_width = 0
 display_height = 0
@@ -24,16 +26,24 @@ game_display = None
 robot = None
 game_map = None
 
-pygame.init()
-robot_img = pygame.image.load('resources/images/robot_gray.png')
-robot_blue = pygame.image.load('resources/images/robot_blue.png')
-robot_red = pygame.image.load('resources/images/robot_red.png')
-robot_green = pygame.image.load('resources/images/robot_green.png')
-run_button = pygame.image.load('resources/images/run.png')
-pygame.display.set_caption('Robot simulator')
-clock = pygame.time.Clock()
+missing_color = 'white'
+exit_col = 0
+exit_row = 0
 
-crashed = False
+if not EVAL_MODE:
+    pygame.init()
+    robot_img = pygame.image.load('resources/images/robot_gray.png')
+    robot_blue = pygame.image.load('resources/images/robot_blue.png')
+    robot_red = pygame.image.load('resources/images/robot_red.png')
+    robot_green = pygame.image.load('resources/images/robot_green.png')
+    robot_magenta = pygame.image.load('resources/images/robot_magenta.png')
+    robot_yellow = pygame.image.load('resources/images/robot_yellow.png')
+    robot_cyan = pygame.image.load('resources/images/robot_cyan.png')
+    run_button = pygame.image.load('resources/images/run.png')
+    pygame.display.set_caption('Robot simulator')
+    clock = pygame.time.Clock()
+
+crashed = EVAL_MODE
 reset = False
 start = True
 
@@ -57,39 +67,64 @@ class Robot:
         self.movements = 0
         self.logic_calls = 0
         self.points = 0
-        self.red_color_identified = False
-        self.green_color_identified = False
+        self.xEnd = 0
+        self.yEnd = 0
+        self.missing_color = 'white'
+        self.white = False
         self.finished = False
 
     def set_position(self, x: int, y: int, w: int) -> None:
-        self.x = x
-        self.y = y
-        self.w = w
-        box = [pygame.math.Vector2(p) for p in [(
-            0, 0), (self.size, 0), (self.size, -self.size), (0, -self.size)]]
-        box_rotate = [p.rotate(self.w) for p in box]
-        min_box = (min(box_rotate, key=lambda p: p[0])[0],
-                   min(box_rotate, key=lambda p: p[1])[1])
-        max_box = (max(box_rotate, key=lambda p: p[0])[0],
-                   max(box_rotate, key=lambda p: p[1])[1])
-        pivot = pygame.math.Vector2(self.size//2, -self.size//2)
-        pivot_rotate = pivot.rotate(self.w)
-        pivot_move = pivot_rotate - pivot
-        origin = (self.x - self.size//2 +
-                  min_box[0] - pivot_move[0], self.y - self.size//2 - max_box[1] + pivot_move[1])
-        if self.color == 'blue':
-            rotated_image = pygame.transform.rotate(robot_blue, self.w)
-        elif self.color == 'red':
-            rotated_image = pygame.transform.rotate(robot_red, self.w)
-        elif self.color == 'green':
-            rotated_image = pygame.transform.rotate(robot_green, self.w)
-        else:
-            rotated_image = pygame.transform.rotate(robot_img, self.w)
-        game_display.blit(rotated_image, origin)
-        pygame.display.update()
-        clock.tick(120)
+        if not EVAL_MODE:
+            self.x = x
+            self.y = y
+            self.w = w
+            box = [pygame.math.Vector2(p) for p in [(
+                0, 0), (self.size, 0), (self.size, -self.size), (0, -self.size)]]
+            box_rotate = [p.rotate(self.w) for p in box]
+            min_box = (min(box_rotate, key=lambda p: p[0])[0],
+                    min(box_rotate, key=lambda p: p[1])[1])
+            max_box = (max(box_rotate, key=lambda p: p[0])[0],
+                    max(box_rotate, key=lambda p: p[1])[1])
+            pivot = pygame.math.Vector2(self.size//2, -self.size//2)
+            pivot_rotate = pivot.rotate(self.w)
+            pivot_move = pivot_rotate - pivot
+            origin = (self.x - self.size//2 +
+                    min_box[0] - pivot_move[0], self.y - self.size//2 - max_box[1] + pivot_move[1])
+            if self.color == 'blue':
+                rotated_image = pygame.transform.rotate(robot_blue, self.w)
+            elif self.color == 'red':
+                rotated_image = pygame.transform.rotate(robot_red, self.w)
+            elif self.color == 'green':
+                rotated_image = pygame.transform.rotate(robot_green, self.w)
+            elif self.color == 'magenta':
+                rotated_image = pygame.transform.rotate(robot_magenta, self.w)
+            elif self.color == 'yellow':
+                rotated_image = pygame.transform.rotate(robot_yellow, self.w)
+            elif self.color == 'cyan':
+                rotated_image = pygame.transform.rotate(robot_cyan, self.w)
+            else:
+                rotated_image = pygame.transform.rotate(robot_img, self.w)
+            game_display.blit(rotated_image, origin)
+            pygame.display.update()
+            clock.tick(120)
         return
-
+    
+    def detect_white(self, old_row, olr_col) -> None:
+        if self.white:
+            return
+        game_map.tiles[self.row][self.col].touched = True
+        game_map.tiles[old_row][olr_col].touched = True
+        for r in range(game_map.height):
+            for c in range(game_map.width):
+                if not game_map.tiles[r][c].touched:
+                    return
+        if game_map.tiles[self.row][self.col].color == 'white':
+            self.white = True
+            self.points += 30
+            print('On white square after exploring the entire labyrinth: +30')
+            generate_map()
+        return
+    
     def move_forward(self) -> None:
         # Map dir:
         #   0 -> north
@@ -103,12 +138,14 @@ class Robot:
             factor = ((-1, 0), (0, -1), (1, 0), (0, 1))
             self.row += factor[self.dir][0]
             self.col += factor[self.dir][1]
-            for _ in range(pixel_constant):
-                rad = math.radians(self.w)
-                x1 = round(math.cos(rad)) + self.x
-                y1 = self.y - round(math.sin(rad))
-                generate_map()
-                self.set_position(x1, y1, self.w)
+            if not EVAL_MODE:
+                for _ in range(pixel_constant):
+                    rad = math.radians(self.w)
+                    x1 = round(math.cos(rad)) + self.x
+                    y1 = self.y - round(math.sin(rad))
+                    generate_map()
+                    self.set_position(x1, y1, self.w)
+            self.detect_white(self.row - factor[self.dir][0], self.col - factor[self.dir][1])
         return
 
     def rotate_right(self) -> None:
@@ -116,9 +153,10 @@ class Robot:
             return
         self.movements += 1
         self.dir = (self.dir - 1 + 4) % 4
-        for _ in range(30):
-            generate_map()
-            self.set_position(self.x, self.y, self.w - 3)
+        if not EVAL_MODE:
+            for _ in range(30):
+                generate_map()
+                self.set_position(self.x, self.y, self.w - 3)
         return
 
     def rotate_left(self) -> None:
@@ -126,9 +164,10 @@ class Robot:
             return
         self.movements += 1
         self.dir = (self.dir + 1) % 4
-        for _ in range(30):
-            generate_map()
-            self.set_position(self.x, self.y, self.w + 3)
+        if not EVAL_MODE:
+            for _ in range(30):
+                generate_map()
+                self.set_position(self.x, self.y, self.w + 3)
         return
 
     def ultrasonic_front(self) -> int:
@@ -206,8 +245,9 @@ class Robot:
                 start_dist += 1
             if distance is None:
                 return -1
-        pygame.display.update()
-        clock.tick(120)
+        if not EVAL_MODE:
+            pygame.display.update()
+            clock.tick(120)
         return distance
 
     def get_color(self) -> str:
@@ -227,76 +267,34 @@ class Robot:
         row = self.row
         col = self.col
         tile_color = game_map.tiles[row][col].color
-        if not game_map.tiles[row][col].color_identified and color == tile_color:
+        if not game_map.tiles[row][col].color_identified and tile_color == 'white' and color == missing_color:
             game_map.tiles[row][col].color_identified = True
-            if color == 'blue':
-                self.points += 10
-            elif color == 'red':
-                self.red_color_identified = True
-                self.points += 25
-            elif color == 'green':
-                self.green_color_identified = True
-                self.points += 25
-            handle_finish_tile_change()
-            print(f'Color successfully identified: {color}')
+            self.points += 20
+            print(f'Missing color successfully identified: {missing_color} +5')
             self.color = color
             self.set_position(self.x, self.y, self.w)
             self.color = 'gray'
-            pygame.time.delay(500)
+            if not EVAL_MODE:
+                pygame.time.delay(500)
+                self.set_position(self.x, self.y, self.w)
+        elif not game_map.tiles[row][col].color_identified and color == tile_color and color != 'white':
+            game_map.tiles[row][col].color_identified = True
+            self.points += 5
+            print(f'Color successfully identified: {color} +5')
+            self.color = color
             self.set_position(self.x, self.y, self.w)
-        return
-
-    def scan_front(self) -> bool:
-        if self.finished:
-            return False
-        self.logic_calls += 1
-        row = self.row
-        col = self.col
-        if self.dir == 0 and row-1 > -1:
-            return game_map.tiles[row-1][col].object
-
-        if self.dir == 1 and col-1 > -1:
-            return game_map.tiles[row][col-1].object
-
-        if self.dir == 2 and row+1 < game_map.height:
-            return game_map.tiles[row+1][col].object
-
-        if self.dir == 3 and col+1 < game_map.width:
-            return game_map.tiles[row][col+1].object
-
-        return False
-
-    def grab_obj(self) -> None:
-        if self.finished:
-            return
-        self.movements += 1
-        row = self.row
-        col = self.col
-        if self.dir == 0 and row-1 > -1 and game_map.tiles[row-1][col].object:
-            game_map.tiles[row-1][col].object = False
-            self.points += 10
-
-        if self.dir == 1 and col-1 > -1 and game_map.tiles[row][col-1].object:
-            game_map.tiles[row][col-1].object = False
-            self.points += 10
-
-        if self.dir == 2 and row+1 < game_map.height and game_map.tiles[row+1][col].object:
-            game_map.tiles[row+1][col].object = False
-            self.points += 10
-
-        if self.dir == 3 and col+1 < game_map.width and game_map.tiles[row][col+1].object:
-            game_map.tiles[row][col+1].object = False
-            self.points += 10
-
-        generate_map()
+            self.color = 'gray'
+            if not EVAL_MODE:
+                pygame.time.delay(500)
+                self.set_position(self.x, self.y, self.w)
         return
 
     def finish_round(self) -> None:
         self.logic_calls -= 1
-        if self.get_color() == 'magenta':
-            self.points += 60
-            print('Arrived correctly to exit: +60')
-            generate_map()
+        if self.col == exit_col and self.row == exit_row:
+            self.points += 30
+            print('Arrived correctly to exit: +30')
+        generate_map()
         print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
         print('Program finished!')
         print("Total points: ", self.points)
@@ -322,6 +320,8 @@ class Robot:
 
 
 def generate_map() -> None:
+    if EVAL_MODE:
+        return
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -338,13 +338,6 @@ def generate_map() -> None:
                 c = COLORS[game_map.tiles[row][col].color]
                 pygame.draw.rect(
                     game_display, c, (x, y, pixel_constant, pixel_constant))
-
-            if game_map.tiles[row][col].object:
-                x = col * pixel_constant + pixel_constant//2
-                y = row * pixel_constant + pixel_constant//2
-                c = COLORS[game_map.tiles[row][col].color]
-                pygame.draw.circle(
-                    game_display, COLORS['black'], (x, y), pixel_constant//4, 1)
 
             # Tile walls in north, south, east and west order
             x1 = [0, 0, 1, 0]
@@ -391,28 +384,6 @@ def generate_map() -> None:
     return
 
 
-def handle_finish_tile_change() -> None:
-    row_finish_tile = game_map.finish_tile_position[0]
-    col_finish_tile = game_map.finish_tile_position[1]
-    if not is_valid_coordinate(row_finish_tile, col_finish_tile):
-        return
-
-    direction = ["north", "south", "east", "west"]
-    dir_reflection = ["south", "north", "west", "east"]
-    dir_reflection_xy = [(-1, 0), (1, 0), (0, 1), (0, -1)]
-    if robot.red_color_identified and robot.green_color_identified:
-        for dir_index in range(len(direction)):
-            setattr(getattr(game_map.tiles[row_finish_tile][col_finish_tile],
-                            direction[dir_index]), "status", 0)
-            new_row = row_finish_tile + dir_reflection_xy[dir_index][0]
-            new_col = col_finish_tile + dir_reflection_xy[dir_index][1]
-            if is_valid_coordinate(new_row, new_col):
-                setattr(getattr(game_map.tiles[new_row][new_col],
-                                dir_reflection[dir_index]), "status", 0)
-        generate_map()
-    return
-
-
 def is_valid_coordinate(row: int, col: int) -> bool:
     if row >= game_map.height or row < 0:
         return False
@@ -427,12 +398,16 @@ def setup_map() -> None:
     global pixel_constant
     global game_display
     global game_map
+    global missing_color
+    global exit_col
+    global exit_row
 
-    pixel_constant = map_info['squareSize'] if map_info['squareSize'] else pixel_constant
-    display_width = map_info['size']['w'] * pixel_constant
-    display_height = map_info['size']['h'] * pixel_constant
-    game_display = pygame.display.set_mode(
-        (display_width + int(pixel_constant*4), display_height))
+    if not EVAL_MODE:
+        pixel_constant = map_info['squareSize'] if map_info['squareSize'] else pixel_constant
+        display_width = map_info['size']['w'] * pixel_constant
+        display_height = map_info['size']['h'] * pixel_constant
+        game_display = pygame.display.set_mode(
+            (display_width + int(pixel_constant*2), display_height))
 
     # Map initialization
     game_map = Map(map_info['size']['w'], map_info['size']['h'])
@@ -440,20 +415,11 @@ def setup_map() -> None:
     dir_reflection = ["south", "north", "west", "east"]
     dir_reflection_xy = [(-1, 0), (1, 0), (0, 1), (0, -1)]
 
-    if map_info['finish_tile']:
-        game_map.finish_tile_position = (
-            map_info['finish_tile']['row'], map_info['finish_tile']['col'])
-        map_info['tiles'].append({
-            "row": game_map.finish_tile_position[0],
-            "col": game_map.finish_tile_position[1],
-            "color": "magenta",
-            "directions": [1, 1, 1, 1],
-            "object": False
-        })
+    color_count = {'blue': 0, 'red': 0, 'green': 0, 'magenta': 0, 'yellow': 0, 'cyan': 0, 'white': 0}
 
     for tile in map_info['tiles']:
         game_map.tiles[tile['row']][tile['col']].color = tile['color']
-        game_map.tiles[tile['row']][tile['col']].object = tile['object']
+        color_count[tile['color']] += 1
         for dir_index in range(len(direction)):
             if getattr(getattr(game_map.tiles[tile['row']][tile['col']],
                                direction[dir_index]), "status") == 0:
@@ -471,24 +437,63 @@ def setup_map() -> None:
     for i in range(map_info['size']['h']):
         game_map.tiles[i][0].west.status = 1
         game_map.tiles[i][map_info['size']['w']-1].east.status = 1
+
+    for key, val in color_count.items():
+        if val == 7:
+            missing_color = key
+            break
+
+    exit_col = 0
+    exit_row = 0
+
+    for i in range(map_info['size']['w']):
+        color_diff = set()
+        color_count = {'blue': 0, 'red': 0, 'green': 0, 'magenta': 0, 'yellow': 0, 'cyan': 0, 'white': 0}
+        for j in range(map_info['size']['h']):
+            color_diff.add(game_map.tiles[j][i].color)
+            color_count[game_map.tiles[j][i].color] += 1
+        for key, val in color_count.items():
+            exit_col += val == 3
+        color_diff.discard('white')
+        exit_col += len(color_diff) == 6
+
+    for j in range(map_info['size']['h']):
+        color_diff = set()
+        color_count = {'blue': 0, 'red': 0, 'green': 0, 'magenta': 0, 'yellow': 0, 'cyan': 0, 'white': 0}
+        for i in range(map_info['size']['w']):
+            color_diff.add(game_map.tiles[j][i].color)
+            color_count[game_map.tiles[j][i].color] += 1
+        for key, val in color_count.items():
+            exit_row += val == 3
+        color_diff.discard('white')
+        exit_row += len(color_diff) == 6
+
     generate_map()
     return
 
 
 def setup_robot() -> None:
     global robot
-    global robot_img
-    global robot_blue
-    global robot_red
-    global robot_green
+    robot_size = 0
+    if not EVAL_MODE:
+        global robot_img
+        global robot_blue
+        global robot_red
+        global robot_green
+        global robot_magenta
+        global robot_yellow
+        global robot_cyan
 
-    robot_size = int(pixel_constant * 0.5)
-    robot_img = pygame.transform.scale(robot_img, (robot_size, robot_size))
-    robot_blue = pygame.transform.scale(robot_blue, (robot_size, robot_size))
-    robot_red = pygame.transform.scale(robot_red, (robot_size, robot_size))
-    robot_green = pygame.transform.scale(robot_green, (robot_size, robot_size))
-    gameIcon = pygame.image.load('resources/images/roborregos_logo.PNG')
-    pygame.display.set_icon(gameIcon)
+        robot_size = int(pixel_constant * 0.5)
+        robot_img = pygame.transform.scale(robot_img, (robot_size, robot_size))
+        robot_blue = pygame.transform.scale(robot_blue, (robot_size, robot_size))
+        robot_red = pygame.transform.scale(robot_red, (robot_size, robot_size))
+        robot_green = pygame.transform.scale(robot_green, (robot_size, robot_size))
+        robot_magenta = pygame.transform.scale(robot_magenta, (robot_size, robot_size))
+        robot_yellow = pygame.transform.scale(robot_yellow, (robot_size, robot_size))
+        robot_cyan = pygame.transform.scale(robot_cyan, (robot_size, robot_size))
+        gameIcon = pygame.image.load('resources/images/roborregos_logo.PNG')
+        pygame.display.set_icon(gameIcon)
 
     col = map_info['robot_start']['col']
     row = map_info['robot_start']['row']
@@ -500,6 +505,7 @@ def setup_robot() -> None:
     direction = dic_dir[angle]
 
     robot = Robot(start_x, start_y, angle, robot_size, col, row, direction)
+    robot.set_position(start_x, start_y, angle)
     return
 
 
@@ -513,6 +519,10 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    if EVAL_MODE:
+        print('Round start')
+        main()
+        print('Round end')
 
     while not crashed:
         if start:
@@ -530,7 +540,9 @@ if __name__ == "__main__":
                         reset = True
 
         if reset:
+            print('Round start')
             main()
+            print('Round end')
             reset = False
         else:
             run_button = pygame.transform.scale(
@@ -538,6 +550,7 @@ if __name__ == "__main__":
             game_display.blit(run_button, (0, 0))
             pygame.display.update()
             clock.tick(120)
-
-    pygame.quit()
+    
+    if not EVAL_MODE:
+        pygame.quit()
     sys.exit()
